@@ -4,7 +4,7 @@
 -----------------------------------------------------
 - **NOMBRE COMPLETO:** Calzada Lozada Sergio Armando
 - **Nº de Cuenta:** 423032132 
-- **GRUPO DE LABORATORIO:** XX
+- **GRUPO DE LABORATORIO;02
 - **GRUPO DE TEORÍA:** 07
 -----------------------------------------------------
 - **NOMBRE COMPLETO:** Paz Rosas Jesús Eduardo
