@@ -14,7 +14,7 @@
 -----------------------------------------------------
 - **NOMBRE COMPLETO:** López Vizcarra Ángel David
 - **Nº de Cuenta:** 320291197
-- **GRUPO DE LABORATORIO:** XX
+- **GRUPO DE LABORATORIO:** 02
 - **GRUPO DE TEORÍA:** 07
 -----------------------------------------------------
 - **NOMBRE COMPLETO:** Zamora Ayala Antonio Manuel
