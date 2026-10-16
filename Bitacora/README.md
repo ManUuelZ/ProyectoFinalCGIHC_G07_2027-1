@@ -18,6 +18,12 @@
 -----------------------------------------------------
 - **NOMBRE COMPLETO:** López Vizcarra Ángel David
 
+30/sep/2026: Creé el modelo de mi personaje elegido(Creeper).
+
+5/oct/2026: Busqué elementos del universo y encontré el modelo aun no texturizado de un camion.
+
+7/oct/2026: Busqué un skybox para el planeta que compartiré con el personaje de LoL
+
 -----------------------------------------------------
 - **NOMBRE COMPLETO:** Zamora Ayala Antonio Manuel
 
