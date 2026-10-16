@@ -26,4 +26,5 @@
 15/oct/26 Reutilicé el modelo del satélite (ya separado para la jerarquía) que se usó en prácticas pasadas: https://www.cgtrader.com/free-3d-models/space/other/satellite-3d
 
 15/oct/26 Reutilicé el modelo de la nave espacial que texturicé para la Práctica 8: https://sketchfab.com/3d-models/multi-universe-space-ship-3d-model-42a2cbc97d9c489b80c6533c44294d55
+
 -----------------------------------------------------
