@@ -6,7 +6,10 @@
 
 -----------------------------------------------------
 - **NOMBRE COMPLETO:** Paz Rosas Jesús Eduardo
-
+23/sep/26: Busqué modelos específicos para Aurelion sol y los probé en Blender.
+30/sep/26: Agregué a la lista modelos de cajas hextech.
+7/oct/26: Diseñé la torre hextech (sin detalle) y agregué los modelos de tec Hextech para adornar
+14/oct/26: Descargué una textura para planeta, la asigné a un modelo de esfera y presenté los modelos de Aurelion, la plataforma de lanzamiento y un planeta.
 -----------------------------------------------------
 - **NOMBRE COMPLETO:** López Vizcarra Ángel David
 
