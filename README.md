@@ -9,7 +9,7 @@
 -----------------------------------------------------
 - **NOMBRE COMPLETO:** Paz Rosas Jesús Eduardo
 - **Nº de Cuenta:** 315134854
-- **GRUPO DE LABORATORIO:** XX
+- **GRUPO DE LABORATORIO:** 02 
 - **GRUPO DE TEORÍA:** 07
 -----------------------------------------------------
 - **NOMBRE COMPLETO:** López Vizcarra Ángel David
