@@ -1,6 +1,6 @@
 # ProyectoFinalCGIHC_G07_2027-1
 
-## Datos de integrantes:
+## Datos de los integrantes:
 -----------------------------------------------------
 - **NOMBRE COMPLETO:** Calzada Lozada Sergio Armando
 - **Nº de Cuenta:** 423032132 
