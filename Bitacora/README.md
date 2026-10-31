@@ -3,7 +3,7 @@
 ## Integrantes:
 -----------------------------------------------------
 - **NOMBRE COMPLETO:** Calzada Lozada Sergio Armando
-
+Entrada 1 — 28 de octubre de 2026: Definición Arquitectónica de los Dos Planetas y Alcance del UniversoRevisión de la propuesta oficial del Grupo 07: Se estableció la división del sistema planetario del proyecto para integrar los cuatro universos propuestos (League of Legends, Project Hail Mary, Los Simpson y Mickey 17):Planeta 1 (Runaterra / Monte Targon): Escenario de despegue con la plataforma Hextech del cohete Hail Mary, la entrada al Vacío, una luna en órbita y la Singularidad de Aurelion Sol en el cielo.Planeta 2 (Erid intervenido por Rigel VII): Escenario de aterrizaje donde se desarrolla la carrera espacial y se concentran los elementos de Los Simpson.Inventario de requerimientos de Los Simpson en el Planeta 2:Podio Presidencial de Kang y Kodos: Modelado jerárquico (base como nodo padre; micrófonos, pancartas y reflectores como hijos) con doble función: escenario principal iluminado por Spotlights nocturnos y arcos de checkpoint sobre la pista que activan el turbo de la nave al atravesarlos.NPCs de Kang y Kodos: Animación jerárquica con rotación cíclica de tentáculos dependiente del torso principal.Platillo Volador Rigelciano: Nave con cúpula semitransparente (Alpha Blending), anillo rotatorio en el eje $Y$ y cilindro inferior verde emisivo como rayo abductor.Inanimadas Barras de Carbono: Objetos emisivos de color verde fluorescente distribuidos por el terreno y los bordes del circuito, configurados como Point Lights en GLSL para guiar al jugador durante la noche.
 -----------------------------------------------------
 - **NOMBRE COMPLETO:** Paz Rosas Jesús Eduardo
 
