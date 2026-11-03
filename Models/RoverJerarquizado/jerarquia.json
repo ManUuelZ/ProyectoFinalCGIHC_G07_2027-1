@@ -1,0 +1,114 @@
+{
+  "ejes": "OBJ: +X frente, +Y arriba, +Z derecha",
+  "piezas": [
+    {
+      "nombre": "cuerpo",
+      "archivo": "cuerpo.obj",
+      "padre": "Rover_Raiz",
+      "pivote_obj": [
+        0.0,
+        0.0,
+        -0.0
+      ],
+      "eje_giro_obj": null,
+      "caras": 8313
+    },
+    {
+      "nombre": "rueda_delantera_izquierda",
+      "archivo": "rueda_delantera_izquierda.obj",
+      "padre": "Rover_Raiz",
+      "pivote_obj": [
+        5.709922790527344,
+        1.7049927711486816,
+        -3.070003032684326
+      ],
+      "eje_giro_obj": [
+        0,
+        0,
+        1
+      ],
+      "caras": 1268
+    },
+    {
+      "nombre": "rueda_delantera_derecha",
+      "archivo": "rueda_delantera_derecha.obj",
+      "padre": "Rover_Raiz",
+      "pivote_obj": [
+        5.712380886077881,
+        1.7049921751022339,
+        3.069999933242798
+      ],
+      "eje_giro_obj": [
+        0,
+        0,
+        1
+      ],
+      "caras": 1268
+    },
+    {
+      "nombre": "rueda_media_izquierda",
+      "archivo": "rueda_media_izquierda.obj",
+      "padre": "Rover_Raiz",
+      "pivote_obj": [
+        -0.9471830129623413,
+        1.4120981693267822,
+        -4.158949851989746
+      ],
+      "eje_giro_obj": [
+        0,
+        0,
+        1
+      ],
+      "caras": 1268
+    },
+    {
+      "nombre": "rueda_media_derecha",
+      "archivo": "rueda_media_derecha.obj",
+      "padre": "Rover_Raiz",
+      "pivote_obj": [
+        -0.9447194337844849,
+        1.4120992422103882,
+        4.158949375152588
+      ],
+      "eje_giro_obj": [
+        0,
+        0,
+        1
+      ],
+      "caras": 1268
+    },
+    {
+      "nombre": "rueda_trasera_izquierda",
+      "archivo": "rueda_trasera_izquierda.obj",
+      "padre": "Rover_Raiz",
+      "pivote_obj": [
+        -5.113411903381348,
+        1.3857547044754028,
+        -4.15894889831543
+      ],
+      "eje_giro_obj": [
+        0,
+        0,
+        1
+      ],
+      "caras": 1268
+    },
+    {
+      "nombre": "rueda_trasera_derecha",
+      "archivo": "rueda_trasera_derecha.obj",
+      "padre": "Rover_Raiz",
+      "pivote_obj": [
+        -5.130508899688721,
+        1.4120992422103882,
+        4.158949375152588
+      ],
+      "eje_giro_obj": [
+        0,
+        0,
+        1
+      ],
+      "caras": 1268
+    }
+  ],
+  "caras_original": 15921
+}

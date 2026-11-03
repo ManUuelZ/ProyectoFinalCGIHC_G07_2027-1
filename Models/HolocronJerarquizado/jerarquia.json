@@ -1,0 +1,100 @@
+{
+  "centro_original": [
+    -47.98773,
+    5.376403,
+    0.6545769999999997
+  ],
+  "caras_original": 70209,
+  "piezas": [
+    {
+      "nombre": "base",
+      "padre": "Holocron_Raiz",
+      "pivote": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "caras": 33277
+    },
+    {
+      "nombre": "esquina_0",
+      "padre": "Holocron_Raiz",
+      "pivote": [
+        -2.6085565000000024,
+        -2.5824154999999998,
+        -2.6783935
+      ],
+      "caras": 4677
+    },
+    {
+      "nombre": "esquina_1",
+      "padre": "Holocron_Raiz",
+      "pivote": [
+        2.612638499999999,
+        -2.558692,
+        -2.6722395
+      ],
+      "caras": 4637
+    },
+    {
+      "nombre": "esquina_2",
+      "padre": "Holocron_Raiz",
+      "pivote": [
+        -2.6132184999999986,
+        2.6981915,
+        -2.5466664999999997
+      ],
+      "caras": 4549
+    },
+    {
+      "nombre": "esquina_3",
+      "padre": "Holocron_Raiz",
+      "pivote": [
+        2.615375499999999,
+        2.7085585,
+        -2.5277069999999995
+      ],
+      "caras": 4558
+    },
+    {
+      "nombre": "esquina_4",
+      "padre": "Holocron_Raiz",
+      "pivote": [
+        -2.623191500000001,
+        -2.6921475,
+        2.5528870000000006
+      ],
+      "caras": 4710
+    },
+    {
+      "nombre": "esquina_5",
+      "padre": "Holocron_Raiz",
+      "pivote": [
+        2.5991169999999997,
+        -2.6956339999999996,
+        2.5195505000000002
+      ],
+      "caras": 4650
+    },
+    {
+      "nombre": "esquina_6",
+      "padre": "Holocron_Raiz",
+      "pivote": [
+        -2.61046,
+        2.5617365000000003,
+        2.683653
+      ],
+      "caras": 4555
+    },
+    {
+      "nombre": "esquina_7",
+      "padre": "Holocron_Raiz",
+      "pivote": [
+        2.5782755,
+        2.579881,
+        2.6771215
+      ],
+      "caras": 4596
+    }
+  ]
+}

@@ -8,14 +8,23 @@ class Window
 public:
 	Window();
 	Window(GLint windowWidth, GLint windowHeight);
-	int Initialise();
+	int Initialise(bool visible = true);
 	GLfloat getBufferWidth() { return bufferWidth; }
 	GLfloat getBufferHeight() { return bufferHeight; }
 	GLfloat getXChange();
 	GLfloat getYChange();
 	GLfloat getmuevex() { return muevex; }
-	GLfloat getmuevexAv1() { return muevexAv1; }
-	GLfloat getmuevexAv2() { return muevexAv2; }
+	// Direccion de movimiento de los modelos: 1 = adelante/arriba, -1 = atras/abajo, 0 = quieto
+	GLfloat getavanceRover() { return avanceRover; }   // G adelante, F atras
+	GLfloat getavanceAvion() { return avanceAvion; }   // H adelante, J atras
+	GLfloat getalturaAvion() { return alturaAvion; }   // I sube, K baja
+	int getColorFaroAvion() const { return colorFaroAvion; }
+	bool getLuzHolocronEncendida() const { return luzHolocronEncendida; }
+	bool getLuzPinzaEncendida() const { return luzPinzaEncendida; }
+	bool getLinternaEncendida() const { return linternaEncendida; }
+	bool getLucesNaveEncendidas() const { return lucesNaveEncendidas; }
+	bool getMotoresIzquierdosEncendidos() const { return motoresIzquierdosEncendidos; }
+	bool getMotoresDerechosEncendidos() const { return motoresDerechosEncendidos; }
 	bool getShouldClose() {
 		return  glfwWindowShouldClose(mainWindow);}
 	bool* getsKeys() { return keys; }
@@ -23,19 +32,28 @@ public:
 	
 	~Window();
 private: 
-	GLFWwindow *mainWindow;
+	GLFWwindow *mainWindow = nullptr;
 	GLint width, height;
 	bool keys[1024];
 	GLint bufferWidth, bufferHeight;
 	void createCallbacks();
 	GLfloat lastX;
 	GLfloat lastY;
-	GLfloat xChange;
-	GLfloat yChange;
+	GLfloat xChange = 0.0f;
+	GLfloat yChange = 0.0f;
 	GLfloat muevex;
-	GLfloat muevexAv1;
-	GLfloat muevexAv2;
-	bool mouseFirstMoved;
+	GLfloat avanceRover;
+	GLfloat avanceAvion;
+	GLfloat alturaAvion;
+	bool mouseFirstMoved = true;
+	// -1 conserva el blanco inicial; la primera C selecciona rojo.
+	int colorFaroAvion = -1;
+	bool luzHolocronEncendida = true;
+	bool luzPinzaEncendida = true;
+	bool linternaEncendida = true;
+	bool lucesNaveEncendidas = true; // N: interruptor general, conserva estados O/P
+	bool motoresIzquierdosEncendidos = true; // O: los dos motores de X negativo
+	bool motoresDerechosEncendidos = true;   // P: los dos motores de X positivo
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);
 	static void ManejaMouse(GLFWwindow* window, double xPos, double yPos);
 

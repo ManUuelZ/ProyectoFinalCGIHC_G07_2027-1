@@ -4,6 +4,9 @@ Window::Window()
 {
 	width = 800;
 	height = 600;
+	avanceRover = 0.0f;
+	avanceAvion = 0.0f;
+	alturaAvion = 0.0f;
 	for (size_t i = 0; i < 1024; i++)
 	{
 		keys[i] = 0;
@@ -14,14 +17,15 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	width = windowWidth;
 	height = windowHeight;
 	muevex = 2.0f;
-	muevexAv1= 0.0f;
-	muevexAv2 = 0.0f;
+	avanceRover = 0.0f;
+	avanceAvion = 0.0f;
+	alturaAvion = 0.0f;
 	for (size_t i = 0; i < 1024; i++)
 	{
 		keys[i] = 0;
 	}
 }
-int Window::Initialise()
+int Window::Initialise(bool visible)
 {
 	//Inicialización de GLFW
 	if (!glfwInit())
@@ -31,6 +35,7 @@ int Window::Initialise()
 		return 1;
 	}
 	//Asignando variables de GLFW y propiedades de ventana
+	glfwWindowHint(GLFW_VISIBLE, visible ? GLFW_TRUE : GLFW_FALSE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	//para solo usar el core profile de OpenGL y no tener retrocompatibilidad
@@ -38,7 +43,7 @@ int Window::Initialise()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
 	//CREAR VENTANA
-	mainWindow = glfwCreateWindow(width, height, "Practica07: Iluminacion 1", NULL, NULL);
+	mainWindow = glfwCreateWindow(width, height, "Proyecto final | 1 Espacio | 2 Valle helado | 3 Erid", NULL, NULL);
 
 	if (!mainWindow)
 	{
@@ -74,6 +79,7 @@ int Window::Initialise()
 	glViewport(0, 0, bufferWidth, bufferHeight);
 	//Callback para detectar que se está usando la ventana
 	glfwSetWindowUserPointer(mainWindow, this);
+	return 0;
 }
 
 void Window::createCallbacks()
@@ -106,6 +112,25 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
+	// Solo PRESS: ignorar REPEAT y RELEASE para cambiar una vez por pulsacion.
+	if (action == GLFW_PRESS)
+	{
+		if (key == GLFW_KEY_N)
+			theWindow->lucesNaveEncendidas = !theWindow->lucesNaveEncendidas;
+		if (key == GLFW_KEY_O)
+			theWindow->motoresIzquierdosEncendidos = !theWindow->motoresIzquierdosEncendidos;
+		if (key == GLFW_KEY_P)
+			theWindow->motoresDerechosEncendidos = !theWindow->motoresDerechosEncendidos;
+		if (key == GLFW_KEY_Z)
+			theWindow->linternaEncendida = !theWindow->linternaEncendida;
+		if (key == GLFW_KEY_C)
+			theWindow->colorFaroAvion = (theWindow->colorFaroAvion + 1) % 6;
+		if (key == GLFW_KEY_V)
+			theWindow->luzHolocronEncendida = !theWindow->luzHolocronEncendida;
+		if (key == GLFW_KEY_B)
+			theWindow->luzPinzaEncendida = !theWindow->luzPinzaEncendida;
+	}
+
 	if (key == GLFW_KEY_Y)
 	{
 		theWindow-> muevex += 1.0;
@@ -114,22 +139,7 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	{
 		theWindow-> muevex -= 1.0;
 	}
-	if (key == GLFW_KEY_M) 
-	{ 
-		theWindow->muevexAv1 += 1.0; 
-	} 
-	if (key == GLFW_KEY_N) 
-	{ 
-		theWindow->muevexAv1 -= 1.0; 
-	}
-	if (key == GLFW_KEY_X)
-	{
-		theWindow->muevexAv2 += 1.0;
-	}
-	if (key == GLFW_KEY_Z)
-	{
-		theWindow->muevexAv2 -= 1.0;
-	}
+
 
 
 	if (key >= 0 && key < 1024)
@@ -145,6 +155,15 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 			//printf("se solto la tecla %d'\n", key);
 		}
 	}
+
+	// Movimiento continuo de los modelos mientras se mantengan presionadas las teclas.
+	// Rover: G adelante, F atras. Avion: H adelante, J atras, I sube, K baja.
+	theWindow->avanceRover = (theWindow->keys[GLFW_KEY_G] ? 1.0f : 0.0f)
+		- (theWindow->keys[GLFW_KEY_F] ? 1.0f : 0.0f);
+	theWindow->avanceAvion = (theWindow->keys[GLFW_KEY_H] ? 1.0f : 0.0f)
+		- (theWindow->keys[GLFW_KEY_J] ? 1.0f : 0.0f);
+	theWindow->alturaAvion = (theWindow->keys[GLFW_KEY_I] ? 1.0f : 0.0f)
+		- (theWindow->keys[GLFW_KEY_K] ? 1.0f : 0.0f);
 }
 
 void Window::ManejaMouse(GLFWwindow* window, double xPos, double yPos)

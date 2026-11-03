@@ -1,4 +1,4 @@
-/*
+ï»¿/*
 Proyecto final
 */
 //para cargar imagen
@@ -28,12 +28,13 @@ Proyecto final
 #include"Model.h"
 #include "Skybox.h"
 
-//para iluminación
+//para iluminaciÃ³n
 #include "CommonValues.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "Material.h"
+#include "ValleHelado.h"
 const float toRadians = 3.14159265f / 180.0f;
 
 Window mainWindow;
@@ -47,7 +48,7 @@ Texture dirtTexture;
 Texture plainTexture;
 Texture pisoPlaneta2;
 
-// Añadir Texturas a usar
+// AÃ±adir Texturas a usar
 
 // Variables para los planetas 
 float rotaPlanetas = 0.0f;
@@ -87,7 +88,7 @@ Model rocky;
 Model brazoRocky;
 Model rocas1;
 
-//Añadir modelo del avión. 
+//AÃ±adir modelo del aviÃ³n. 
 Model Avion_M; 
 
 // Modelos del espacio
@@ -110,7 +111,7 @@ Skybox skybox3;		// Skybox del planeta 2
 
 int escenarioActual = 1;	// Escenario actual a mostrar (1, 2 o 3)
 
-// Variables para animación
+// Variables para animaciÃ³n
 
 
 //materiales
@@ -136,7 +137,7 @@ static const char* vShader = "shaders/shader_light.vert";
 static const char* fShader = "shaders/shader_light.frag";
 
 
-//función de calculo de normales por promedio de vértices 
+//funciÃ³n de calculo de normales por promedio de vÃ©rtices 
 void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount,
 	unsigned int vLength, unsigned int normalOffset)
 {
@@ -250,12 +251,18 @@ void CreateShaders()
 
 
 
-int main()
+int main(int argc, char** argv)
 {
 	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
-	mainWindow.Initialise();
+	const bool verificarValle = argc > 1 && std::string(argv[1]) == "--verificar-valle";
+	const bool verificarTodo = argc > 1 && std::string(argv[1]) == "--verificar";
+	const bool verificar = verificarValle || verificarTodo;
+	if (mainWindow.Initialise(!verificar) != 0) return 1;
+	int framePrueba = 0;
+	bool falloGL = false;
 	CreateObjects();
 	CreateShaders();
+	if (!ValleHelado::iniciar()) return 2;
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 375.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 1.0f, 0.5f);
 
@@ -312,7 +319,7 @@ int main()
 	asteroides = Model();
 	asteroides.LoadModel("Models/asteroides.obj");
 
-	// ----- Configuración Skybox Escenario 1 -----
+	// ----- ConfiguraciÃ³n Skybox Escenario 1 -----
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/espacio_rt.tga");
 	skyboxFaces.push_back("Textures/Skybox/espacio_lf.tga");
@@ -323,7 +330,7 @@ int main()
 
 	skybox1 = Skybox(skyboxFaces);
 	
-	// ----- Configuración Skybox Escenario 2 (Planeta 1)-----
+	// ----- ConfiguraciÃ³n Skybox Escenario 2 (Planeta 1)-----
 	std::vector<std::string> skyboxFaces2;
 	skyboxFaces2.push_back("Textures/Skybox/planeta1_rt.tga"); // Cambia estas rutas por tus texturas
 	skyboxFaces2.push_back("Textures/Skybox/planeta1_lf.tga");
@@ -332,31 +339,29 @@ int main()
 	skyboxFaces2.push_back("Textures/Skybox/planeta1_bk.tga");
 	skyboxFaces2.push_back("Textures/Skybox/planeta1_ft.tga");
 	skybox2 = Skybox(skyboxFaces2);
-	/*
-	// ----- Configuración Skybox Escenario 3 (Planeta 2) -----
+	// ----- ConfiguraciÃ³n Skybox Escenario 3 (Planeta 2) -----
 	std::vector<std::string> skyboxFaces3;
-	skyboxFaces3.push_back("Textures/Skybox/espacio_rt.tga"); // Cambia estas rutas por tus texturas
-	skyboxFaces3.push_back("Textures/Skybox/espacio_lf.tga");
-	skyboxFaces3.push_back("Textures/Skybox/espacio_dn.tga");
-	skyboxFaces3.push_back("Textures/Skybox/espacio_up.tga");
-	skyboxFaces3.push_back("Textures/Skybox/espacio_bk.tga");
-	skyboxFaces3.push_back("Textures/Skybox/espacio_ft.tga");
+	skyboxFaces3.push_back("Textures/Skybox/erid_right.jpg");
+	skyboxFaces3.push_back("Textures/Skybox/erid_left.jpg");
+	skyboxFaces3.push_back("Textures/Skybox/erid_bottom.jpg");
+	skyboxFaces3.push_back("Textures/Skybox/erid_top.jpg");
+	skyboxFaces3.push_back("Textures/Skybox/erid_back.jpg");
+	skyboxFaces3.push_back("Textures/Skybox/erid_front.jpg");
 	skybox3 = Skybox(skyboxFaces3);
-	*/
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
 
 	//contador de luces puntuales
 	unsigned int pointLightCount = 0;
 
-	//Declaración de primer luz puntual (Modelo del Sol)
+	//DeclaraciÃ³n de primer luz puntual (Modelo del Sol)
 	pointLights[0] = PointLight(1.0f, 0.75f, 0.0f,
 		5.0f, 5.0f,				// radiacion y color (0.3f y 0.6f)
 		0.0f, 75.0f, -150.0f,
 		0.3f, 0.0005f, 0.0003f); 
 	pointLightCount++;
 
-	//Declaración de primer luz puntual
+	//DeclaraciÃ³n de primer luz puntual
 	pointLights[1] = PointLight(1.0f, 1.0f, 1.0f,
 		0.8f, 0.8f,				// radiacion y color (0.3f y 0.6f)
 		0.0f, 0.0f, 150.0f,
@@ -399,7 +404,7 @@ int main()
 	////Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
 	{	
-		//luz direccional, sólo 1 y siempre debe de existir
+		//luz direccional, sÃ³lo 1 y siempre debe de existir
 		if (escenarioActual == 1)
 		{
 			// Espacio
@@ -426,19 +431,21 @@ int main()
 		}
 
 		GLfloat now = glfwGetTime();
+		const double segundosValle = verificar ? 1.0 / 60.0 : now - lastTime;
 		deltaTime = now - lastTime;
 		deltaTime += (now - lastTime) / limitFPS;
 		lastTime = now;
 
 		//Recibir eventos del usuario
 		glfwPollEvents();
-		camera.keyControl(mainWindow.getsKeys(), deltaTime);
+		camera.keyControl(mainWindow.getsKeys(), escenarioActual == 2 ? static_cast<float>(segundosValle) : deltaTime);
 		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
 		
-		// Detección de teclas para cambiar de escenario y reubicar la cámara
+		// DetecciÃ³n de teclas para cambiar de escenario y reubicar la cÃ¡mara
 		if (mainWindow.getsKeys()[GLFW_KEY_1] && escenarioActual != 1) {
 			escenarioActual = 1;
 			camera = Camera(glm::vec3(0.0f, 0.0f, 375.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 2.5f, 0.5f);
+			glfwSetWindowTitle(glfwGetCurrentContext(), "Proyecto final | 1 Espacio | 2 Valle helado | 3 Erid");
 		}
 		if (mainWindow.getsKeys()[GLFW_KEY_2] && escenarioActual != 2) {
 			escenarioActual = 2;
@@ -447,24 +454,53 @@ int main()
 		if (mainWindow.getsKeys()[GLFW_KEY_3] && escenarioActual != 3) {
 			escenarioActual = 3;
 			camera = Camera(glm::vec3(0.0f, 0.0f, 50.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.5f, 0.5f);
+			glfwSetWindowTitle(glfwGetCurrentContext(), "Proyecto final | 1 Espacio | 2 Valle helado | 3 Erid");
 		}
+		if (verificarValle) escenarioActual = 2;
+		else if (verificarTodo) {
+			if (framePrueba == 1) escenarioActual = 2;
+			else if (framePrueba == 61) {
+				escenarioActual = 3;
+				camera = Camera(glm::vec3(0.0f, 8.0f, 50.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -5.0f, 0.5f, 0.5f);
+			}
+		}
+
+		// Escenario 2: Valle helado, Crepper NPC y modelos de Planeta 1
+		if (escenarioActual == 2) {
+			auto proyeccionValle = glm::perspective(glm::radians(45.0f),
+				(float)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1200.0f);
+			ValleHelado::dibujar(camera, proyeccionValle, segundosValle);
+			if (verificarValle) {
+				if (framePrueba == 0 || framePrueba == 120 || framePrueba == 240) ValleHelado::captura(framePrueba);
+				GLenum error = glGetError();
+				if (error != GL_NO_ERROR) { printf("GL ERROR: %u\n", error); falloGL = true; }
+				if (++framePrueba > 240) break;
+			}
+			else if (verificarTodo) {
+				if (framePrueba == 30) ValleHelado::captura("x64/Practica9/escena2.ppm");
+				if (++framePrueba > 62) break;
+			}
+			mainWindow.swapBuffers();
+			continue;
+		}
+		ValleHelado::estabaActivo = false;
 		
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Lógica de Renderizado por Escenario
+		// LÃ³gica de Renderizado por Escenario
 		if (escenarioActual == 1) {
 			skybox1.DrawSkybox(camera.calculateViewMatrix(), projection);
 		}
 		else if (escenarioActual == 2) {
 			skybox2.DrawSkybox(camera.calculateViewMatrix(), projection);
 		}
-		//else if (escenarioActual == 3) {
-		//	skybox3.DrawSkybox(camera.calculateViewMatrix(), projection);
-		//}
+		else if (escenarioActual == 3) {
+			skybox3.DrawSkybox(camera.calculateViewMatrix(), projection);
+		}
 
-		// Configuración de los Shaders de Iluminación 
+		// ConfiguraciÃ³n de los Shaders de IluminaciÃ³n 
 		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
 		uniformProjection = shaderList[0].GetProjectionLocation();
@@ -472,7 +508,7 @@ int main()
 		uniformEyePosition = shaderList[0].GetEyePositionLocation();
 		uniformColor = shaderList[0].getColorLocation();
 
-		//información en el shader de intensidad especular y brillo
+		//informaciÃ³n en el shader de intensidad especular y brillo
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
 
@@ -480,8 +516,8 @@ int main()
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
-		// luz ligada a la cámara de tipo flash
-		//sirve para que en tiempo de ejecución (dentro del while) se cambien propiedades de la luz
+		// luz ligada a la cÃ¡mara de tipo flash
+		//sirve para que en tiempo de ejecuciÃ³n (dentro del while) se cambien propiedades de la luz
 		glm::vec3 lowerLight = camera.getCameraPosition();
 		lowerLight.y -= 0.3f;
 		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
@@ -490,7 +526,7 @@ int main()
 		if (escenarioActual == 1)
 		{
 			shaderList[0].SetDirectionalLight(&mainLight);
-			shaderList[0].SetPointLights(pointLights, 1); // sólo el Sol
+			shaderList[0].SetPointLights(pointLights, 1); // sÃ³lo el Sol
 			shaderList[0].SetSpotLights(spotLights, 0);
 		}
 		else if (escenarioActual == 2)
@@ -503,36 +539,36 @@ int main()
 		{
 			shaderList[0].SetDirectionalLight(&mainLight);
 			shaderList[0].SetPointLights(pointLights, 0);
-			shaderList[0].SetSpotLights(spotLights, 1); // sólo la linterna
+			shaderList[0].SetSpotLights(spotLights, 1); // sÃ³lo la linterna
 		}
 
 		glm::mat4 model(1.0);
 		glm::mat4 modelaux(1.0);
-		glm::mat4 modelaux2(1.0); // para la jerarquía del satelite
-		glm::mat4 modelaux3(1.0); // para la jerarquía del satelite
+		glm::mat4 modelaux2(1.0); // para la jerarquÃ­a del satelite
+		glm::mat4 modelaux3(1.0); // para la jerarquÃ­a del satelite
 		glm::mat4 modelaux4(1.0);
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 
-		// Dibujado de objetos según el escenario
+		// Dibujado de objetos segÃºn el escenario
 		if (escenarioActual == 1) {
 
-			// Animación básica de los planetas
+			// AnimaciÃ³n bÃ¡sica de los planetas
 			rotaPlanetas += rotaPlanetasOffset * deltaTime;
 			if (rotaPlanetas >= 360.0f * toRadians) {
 				rotaPlanetas = 0.0f;
 			}
 
-			// Animación básica de los anillos de asteroides
+			// AnimaciÃ³n bÃ¡sica de los anillos de asteroides
 			rotaAnillo += rotaAnilloOffset * deltaTime;
 
-			// Animación de la luna orbitando alrededor del planeta 1
+			// AnimaciÃ³n de la luna orbitando alrededor del planeta 1
 			rotaLuna += rotaLunaOffset * deltaTime;
 
 			if (rotaLuna >= 360.0f * toRadians) {
 				rotaLuna = 0.0f;
 			}
 
-			// Animación del satélite
+			// AnimaciÃ³n del satÃ©lite
 			rotaAntena += rotaAntenaOffset * deltaTime;
 			rotaPanelIzq += rotaPanelIzqOffset * deltaTime;
 			rotaPanelDer += rotaPanelDerOffset * deltaTime;
@@ -571,7 +607,7 @@ int main()
 			glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 			luna.RenderModel();
 
-			// Satélite
+			// SatÃ©lite
 			// Cuerpo del satelite
 			model = modelaux2;
 			color = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -627,7 +663,7 @@ int main()
 			glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 			planeta2.RenderModel();
 
-			// Cinturón de asteroides 1
+			// CinturÃ³n de asteroides 1
 			model = glm::mat4(1.0);
 			color = glm::vec3(1.0f, 1.0f, 1.0f);
 			model = glm::translate(model, glm::vec3(-250.0f, 0.0f, 175.0f));
@@ -638,7 +674,7 @@ int main()
 			glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 			anilloAst.RenderModel();
 
-			// Cinturón de asteroides 2
+			// CinturÃ³n de asteroides 2
 			model = glm::mat4(1.0);
 			color = glm::vec3(1.0f, 1.0f, 1.0f);
 			model = glm::translate(model, glm::vec3(-250.0f, 0.0f, 175.0f));
@@ -663,12 +699,12 @@ int main()
 
 		}
 		else if (escenarioActual == 2) {
-			// Coloca aquí los modelos, texturas y posiciones para tu Escenario 2
+			// Coloca aquÃ­ los modelos, texturas y posiciones para tu Escenario 2
 
 		}
 		else if (escenarioActual == 3) {
 
-			// Animación de Rocky saludando
+			// AnimaciÃ³n de Rocky saludando
 			if (saludo)
 			{
 				rotBrazoRocky += rotBrazoRockyOffset;
@@ -740,8 +776,14 @@ int main()
 
 		glUseProgram(0);
 
+		if (verificarTodo) {
+			if (framePrueba == 0) ValleHelado::captura("x64/Practica9/escena1.ppm");
+			if (framePrueba == 61) ValleHelado::captura("x64/Practica9/escena3.ppm");
+			if (++framePrueba > 62) break;
+		}
+
 		mainWindow.swapBuffers();
 	}
 
-	return 0;
+	return falloGL ? 3 : 0;
 }

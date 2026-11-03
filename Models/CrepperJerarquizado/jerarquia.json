@@ -1,0 +1,1077 @@
+{
+  "ejes": "+Y arriba; frente -Z; izquierda del archivo -X",
+  "tipo": "Jerarquia rigida, sin skinning; pivotes aproximados a las uniones visibles",
+  "caras_original": 47952,
+  "nodos": [
+    {
+      "nombre": "Crepper_Raiz",
+      "padre": null,
+      "indice_padre": -1,
+      "pivote_obj": [
+        0,
+        0,
+        0
+      ],
+      "traslacion_local": [
+        0,
+        0,
+        0
+      ],
+      "archivo": null
+    },
+    {
+      "nombre": "cuerpo_inferior",
+      "padre": "Crepper_Raiz",
+      "indice_padre": 0,
+      "archivo": "cuerpo_inferior.obj",
+      "pivote_obj": [
+        0,
+        0.67,
+        0.05
+      ],
+      "traslacion_local": [
+        0,
+        0.67,
+        0.05
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 2208,
+      "limites_obj": [
+        [
+          -0.88,
+          0.3,
+          -2.22
+        ],
+        [
+          0.88,
+          1.04,
+          2.32
+        ]
+      ]
+    },
+    {
+      "nombre": "cabeza",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "cabeza.obj",
+      "pivote_obj": [
+        0,
+        0.91,
+        -1.3900000000000001
+      ],
+      "traslacion_local": [
+        0,
+        0.24,
+        -1.4400000000000002
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 3472,
+      "limites_obj": [
+        [
+          -0.82,
+          0.19,
+          -2.43
+        ],
+        [
+          0.82,
+          1.63,
+          -1.31
+        ]
+      ]
+    },
+    {
+      "nombre": "borde_frontal",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "borde_frontal.obj",
+      "pivote_obj": [
+        0.0,
+        0.67,
+        -1.925
+      ],
+      "traslacion_local": [
+        0.0,
+        0.0,
+        -1.975
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1662,
+      "limites_obj": [
+        [
+          -1.035621,
+          0.67,
+          -2.08
+        ],
+        [
+          1.035621,
+          1.9042,
+          -1.77
+        ]
+      ]
+    },
+    {
+      "nombre": "placa_01",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "placa_01.obj",
+      "pivote_obj": [
+        0.0,
+        0.67,
+        -1.6099999999999999
+      ],
+      "traslacion_local": [
+        0.0,
+        0.0,
+        -1.66
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1662,
+      "limites_obj": [
+        [
+          -1.066174,
+          0.67,
+          -1.92
+        ],
+        [
+          1.066174,
+          1.9297,
+          -1.3
+        ]
+      ]
+    },
+    {
+      "nombre": "placa_02",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "placa_02.obj",
+      "pivote_obj": [
+        0.0,
+        0.67,
+        -0.96
+      ],
+      "traslacion_local": [
+        0.0,
+        0.0,
+        -1.01
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1662,
+      "limites_obj": [
+        [
+          -1.076405,
+          0.67,
+          -1.27
+        ],
+        [
+          1.076405,
+          1.935684,
+          -0.65
+        ]
+      ]
+    },
+    {
+      "nombre": "placa_03",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "placa_03.obj",
+      "pivote_obj": [
+        0.0,
+        0.67,
+        -0.31
+      ],
+      "traslacion_local": [
+        0.0,
+        0.0,
+        -0.36
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1662,
+      "limites_obj": [
+        [
+          -1.0531,
+          0.67,
+          -0.62
+        ],
+        [
+          1.0531,
+          1.898617,
+          0.0
+        ]
+      ]
+    },
+    {
+      "nombre": "placa_04",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "placa_04.obj",
+      "pivote_obj": [
+        0.0,
+        0.67,
+        0.325
+      ],
+      "traslacion_local": [
+        0.0,
+        0.0,
+        0.275
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1662,
+      "limites_obj": [
+        [
+          -1.001362,
+          0.67,
+          0.03
+        ],
+        [
+          1.001362,
+          1.824005,
+          0.62
+        ]
+      ]
+    },
+    {
+      "nombre": "placa_05",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "placa_05.obj",
+      "pivote_obj": [
+        0.0,
+        0.67,
+        0.925
+      ],
+      "traslacion_local": [
+        0.0,
+        0.0,
+        0.875
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1662,
+      "limites_obj": [
+        [
+          -0.916867,
+          0.67,
+          0.65
+        ],
+        [
+          0.916867,
+          1.705894,
+          1.2
+        ]
+      ]
+    },
+    {
+      "nombre": "placa_06",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "placa_06.obj",
+      "pivote_obj": [
+        0.0,
+        0.67,
+        1.48
+      ],
+      "traslacion_local": [
+        0.0,
+        0.0,
+        1.43
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1662,
+      "limites_obj": [
+        [
+          -0.7899,
+          0.67,
+          1.23
+        ],
+        [
+          0.7899,
+          1.523997,
+          1.73
+        ]
+      ]
+    },
+    {
+      "nombre": "placa_07",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "placa_07.obj",
+      "pivote_obj": [
+        0.0,
+        0.67,
+        1.9649999999999999
+      ],
+      "traslacion_local": [
+        0.0,
+        0.0,
+        1.9149999999999998
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1662,
+      "limites_obj": [
+        [
+          -0.6175,
+          0.67,
+          1.76
+        ],
+        [
+          0.6175,
+          1.297,
+          2.17
+        ]
+      ]
+    },
+    {
+      "nombre": "cola",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "cola.obj",
+      "pivote_obj": [
+        0,
+        0.67,
+        1.83
+      ],
+      "traslacion_local": [
+        0,
+        0.0,
+        1.78
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1520,
+      "limites_obj": [
+        [
+          -0.4,
+          0.44,
+          1.75
+        ],
+        [
+          0.4,
+          0.92,
+          2.61
+        ]
+      ]
+    },
+    {
+      "nombre": "pata_izquierda_1",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "pata_izquierda_1.obj",
+      "pivote_obj": [
+        -0.86,
+        0.5706052577319587,
+        -1.4607814329896907
+      ],
+      "traslacion_local": [
+        -0.86,
+        -0.09939474226804135,
+        -1.5107814329896907
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1216,
+      "limites_obj": [
+        [
+          -1.15,
+          0.011199,
+          -1.750693
+        ],
+        [
+          -0.57,
+          0.588801,
+          -1.229307
+        ]
+      ]
+    },
+    {
+      "nombre": "pata_izquierda_2",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "pata_izquierda_2.obj",
+      "pivote_obj": [
+        -0.98,
+        0.5706052577319587,
+        -0.9607814329896907
+      ],
+      "traslacion_local": [
+        -0.98,
+        -0.09939474226804135,
+        -1.0107814329896907
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1216,
+      "limites_obj": [
+        [
+          -1.27,
+          0.011199,
+          -1.250693
+        ],
+        [
+          -0.69,
+          0.588801,
+          -0.729307
+        ]
+      ]
+    },
+    {
+      "nombre": "pata_izquierda_3",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "pata_izquierda_3.obj",
+      "pivote_obj": [
+        -1.02,
+        0.5706052577319587,
+        -0.3707814329896907
+      ],
+      "traslacion_local": [
+        -1.02,
+        -0.09939474226804135,
+        -0.4207814329896907
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1216,
+      "limites_obj": [
+        [
+          -1.31,
+          0.011199,
+          -0.660693
+        ],
+        [
+          -0.73,
+          0.588801,
+          -0.139307
+        ]
+      ]
+    },
+    {
+      "nombre": "pata_izquierda_4",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "pata_izquierda_4.obj",
+      "pivote_obj": [
+        -1.0,
+        0.5706052577319587,
+        0.22921856701030927
+      ],
+      "traslacion_local": [
+        -1.0,
+        -0.09939474226804135,
+        0.17921856701030925
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1216,
+      "limites_obj": [
+        [
+          -1.29,
+          0.011199,
+          -0.060693
+        ],
+        [
+          -0.71,
+          0.588801,
+          0.460693
+        ]
+      ]
+    },
+    {
+      "nombre": "pata_izquierda_5",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "pata_izquierda_5.obj",
+      "pivote_obj": [
+        -0.9400000000000001,
+        0.5706052577319587,
+        0.8292185670103093
+      ],
+      "traslacion_local": [
+        -0.9400000000000001,
+        -0.09939474226804135,
+        0.7792185670103092
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1216,
+      "limites_obj": [
+        [
+          -1.23,
+          0.011199,
+          0.539307
+        ],
+        [
+          -0.65,
+          0.588801,
+          1.060693
+        ]
+      ]
+    },
+    {
+      "nombre": "pata_izquierda_6",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "pata_izquierda_6.obj",
+      "pivote_obj": [
+        -0.8200000000000001,
+        0.5706052577319587,
+        1.3792185670103092
+      ],
+      "traslacion_local": [
+        -0.8200000000000001,
+        -0.09939474226804135,
+        1.3292185670103092
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1216,
+      "limites_obj": [
+        [
+          -1.11,
+          0.011199,
+          1.089307
+        ],
+        [
+          -0.53,
+          0.588801,
+          1.610693
+        ]
+      ]
+    },
+    {
+      "nombre": "pata_izquierda_7",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "pata_izquierda_7.obj",
+      "pivote_obj": [
+        -0.65,
+        0.5706052577319587,
+        1.8492185670103092
+      ],
+      "traslacion_local": [
+        -0.65,
+        -0.09939474226804135,
+        1.7992185670103091
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1216,
+      "limites_obj": [
+        [
+          -0.94,
+          0.011199,
+          1.559307
+        ],
+        [
+          -0.36,
+          0.588801,
+          2.080693
+        ]
+      ]
+    },
+    {
+      "nombre": "apendice_exterior_izquierda",
+      "padre": "cabeza",
+      "indice_padre": 2,
+      "archivo": "apendice_exterior_izquierda.obj",
+      "pivote_obj": [
+        -0.5599999999999999,
+        0.4740676862745098,
+        -1.8821956862745097
+      ],
+      "traslacion_local": [
+        -0.5599999999999999,
+        -0.43593231372549024,
+        -0.4921956862745096
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1840,
+      "limites_obj": [
+        [
+          -0.85,
+          0.070635,
+          -2.649586
+        ],
+        [
+          -0.27,
+          0.889365,
+          -1.850414
+        ]
+      ]
+    },
+    {
+      "nombre": "apendice_central_izquierda",
+      "padre": "cabeza",
+      "indice_padre": 2,
+      "archivo": "apendice_central_izquierda.obj",
+      "pivote_obj": [
+        -0.22999999999999998,
+        0.5045906212121213,
+        -2.1017045454545453
+      ],
+      "traslacion_local": [
+        -0.22999999999999998,
+        -0.40540937878787875,
+        -0.7117045454545452
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 2160,
+      "limites_obj": [
+        [
+          -0.465,
+          0.150589,
+          -2.724732
+        ],
+        [
+          0.005,
+          1.089411,
+          -2.075268
+        ]
+      ]
+    },
+    {
+      "nombre": "ojo_izquierda",
+      "padre": "cabeza",
+      "indice_padre": 2,
+      "archivo": "ojo_izquierda.obj",
+      "pivote_obj": [
+        -0.5800000000000001,
+        1.19,
+        -2.226
+      ],
+      "traslacion_local": [
+        -0.5800000000000001,
+        0.2799999999999999,
+        -0.8359999999999999
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1216,
+      "limites_obj": [
+        [
+          -0.667,
+          1.09,
+          -2.291
+        ],
+        [
+          -0.493,
+          1.29,
+          -2.161
+        ]
+      ]
+    },
+    {
+      "nombre": "pata_derecha_1",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "pata_derecha_1.obj",
+      "pivote_obj": [
+        0.86,
+        0.5706052577319587,
+        -1.4607814329896907
+      ],
+      "traslacion_local": [
+        0.86,
+        -0.09939474226804135,
+        -1.5107814329896907
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1216,
+      "limites_obj": [
+        [
+          0.57,
+          0.011199,
+          -1.750693
+        ],
+        [
+          1.15,
+          0.588801,
+          -1.229307
+        ]
+      ]
+    },
+    {
+      "nombre": "pata_derecha_2",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "pata_derecha_2.obj",
+      "pivote_obj": [
+        0.98,
+        0.5706052577319587,
+        -0.9607814329896907
+      ],
+      "traslacion_local": [
+        0.98,
+        -0.09939474226804135,
+        -1.0107814329896907
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1216,
+      "limites_obj": [
+        [
+          0.69,
+          0.011199,
+          -1.250693
+        ],
+        [
+          1.27,
+          0.588801,
+          -0.729307
+        ]
+      ]
+    },
+    {
+      "nombre": "pata_derecha_3",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "pata_derecha_3.obj",
+      "pivote_obj": [
+        1.02,
+        0.5706052577319587,
+        -0.3707814329896907
+      ],
+      "traslacion_local": [
+        1.02,
+        -0.09939474226804135,
+        -0.4207814329896907
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1216,
+      "limites_obj": [
+        [
+          0.73,
+          0.011199,
+          -0.660693
+        ],
+        [
+          1.31,
+          0.588801,
+          -0.139307
+        ]
+      ]
+    },
+    {
+      "nombre": "pata_derecha_4",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "pata_derecha_4.obj",
+      "pivote_obj": [
+        1.0,
+        0.5706052577319587,
+        0.22921856701030927
+      ],
+      "traslacion_local": [
+        1.0,
+        -0.09939474226804135,
+        0.17921856701030925
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1216,
+      "limites_obj": [
+        [
+          0.71,
+          0.011199,
+          -0.060693
+        ],
+        [
+          1.29,
+          0.588801,
+          0.460693
+        ]
+      ]
+    },
+    {
+      "nombre": "pata_derecha_5",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "pata_derecha_5.obj",
+      "pivote_obj": [
+        0.9400000000000001,
+        0.5706052577319587,
+        0.8292185670103093
+      ],
+      "traslacion_local": [
+        0.9400000000000001,
+        -0.09939474226804135,
+        0.7792185670103092
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1216,
+      "limites_obj": [
+        [
+          0.65,
+          0.011199,
+          0.539307
+        ],
+        [
+          1.23,
+          0.588801,
+          1.060693
+        ]
+      ]
+    },
+    {
+      "nombre": "pata_derecha_6",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "pata_derecha_6.obj",
+      "pivote_obj": [
+        0.8200000000000001,
+        0.5706052577319587,
+        1.3792185670103092
+      ],
+      "traslacion_local": [
+        0.8200000000000001,
+        -0.09939474226804135,
+        1.3292185670103092
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1216,
+      "limites_obj": [
+        [
+          0.53,
+          0.011199,
+          1.089307
+        ],
+        [
+          1.11,
+          0.588801,
+          1.610693
+        ]
+      ]
+    },
+    {
+      "nombre": "pata_derecha_7",
+      "padre": "cuerpo_inferior",
+      "indice_padre": 1,
+      "archivo": "pata_derecha_7.obj",
+      "pivote_obj": [
+        0.65,
+        0.5706052577319587,
+        1.8492185670103092
+      ],
+      "traslacion_local": [
+        0.65,
+        -0.09939474226804135,
+        1.7992185670103091
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1216,
+      "limites_obj": [
+        [
+          0.36,
+          0.011199,
+          1.559307
+        ],
+        [
+          0.94,
+          0.588801,
+          2.080693
+        ]
+      ]
+    },
+    {
+      "nombre": "apendice_exterior_derecha",
+      "padre": "cabeza",
+      "indice_padre": 2,
+      "archivo": "apendice_exterior_derecha.obj",
+      "pivote_obj": [
+        0.5599999999999999,
+        0.4859323137254902,
+        -1.8821956862745097
+      ],
+      "traslacion_local": [
+        0.5599999999999999,
+        -0.42406768627450986,
+        -0.4921956862745096
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1840,
+      "limites_obj": [
+        [
+          0.27,
+          0.070635,
+          -2.649586
+        ],
+        [
+          0.85,
+          0.889365,
+          -1.850414
+        ]
+      ]
+    },
+    {
+      "nombre": "apendice_central_derecha",
+      "padre": "cabeza",
+      "indice_padre": 2,
+      "archivo": "apendice_central_derecha.obj",
+      "pivote_obj": [
+        0.22999999999999998,
+        0.5045906212121213,
+        -2.1017045454545453
+      ],
+      "traslacion_local": [
+        0.22999999999999998,
+        -0.40540937878787875,
+        -0.7117045454545452
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 2160,
+      "limites_obj": [
+        [
+          -0.005,
+          0.150589,
+          -2.724732
+        ],
+        [
+          0.465,
+          1.089411,
+          -2.075268
+        ]
+      ]
+    },
+    {
+      "nombre": "ojo_derecha",
+      "padre": "cabeza",
+      "indice_padre": 2,
+      "archivo": "ojo_derecha.obj",
+      "pivote_obj": [
+        0.5800000000000001,
+        1.19,
+        -2.226
+      ],
+      "traslacion_local": [
+        0.5800000000000001,
+        0.2799999999999999,
+        -0.8359999999999999
+      ],
+      "eje_balanceo": [
+        1,
+        0,
+        0
+      ],
+      "caras": 1216,
+      "limites_obj": [
+        [
+          0.493,
+          1.09,
+          -2.291
+        ],
+        [
+          0.667,
+          1.29,
+          -2.161
+        ]
+      ]
+    }
+  ]
+}

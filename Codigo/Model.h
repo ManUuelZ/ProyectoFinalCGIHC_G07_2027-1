@@ -16,10 +16,13 @@ public:
 	void LoadModel(const std::string& fileName);
 	void RenderModel();
 	void ClearModel();
+	aiVector3D minimo, maximo;
+	bool cargado() const { return !MeshList.empty(); }
 
 	~Model();
 
 private:
+	std::string directorioModelo;
 	void LoadNode(aiNode* node, const aiScene* scene); //assimp
 	void LoadMesh(aiMesh* mesh, const aiScene* scene);
 	void LoadMaterials(const aiScene* scene);

@@ -36,6 +36,11 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+	CreateSkyMesh();
+}
+
+void Skybox::CreateSkyMesh()
+{
 	//Creando el Mesh del skybox
 	unsigned int skyboxIndices[] = {
 		// front
@@ -73,8 +78,34 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 
 }
 
+Skybox::Skybox(const std::string& panoramaLocation)
+{
+    textureTarget = GL_TEXTURE_2D;
+    skyShader = new Shader();
+    skyShader->CreateFromFiles("shaders/skybox.vert", "shaders/skybox_panorama.frag");
+    uniformProjection = skyShader->GetProjectionLocation();
+    uniformView = skyShader->GetViewLocation();
+    int width, height, channels;
+    unsigned char* pixels = stbi_load(panoramaLocation.c_str(), &width, &height, &channels, STBI_rgb_alpha);
+    if (!pixels)
+    {
+        printf("No se pudo cargar panorama: %s\n", panoramaLocation.c_str());
+        return;
+    }
+    glGenTextures(1, &textureId);
+    glBindTexture(textureTarget, textureId);
+    glTexImage2D(textureTarget, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    stbi_image_free(pixels);
+    glTexParameteri(textureTarget, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    CreateSkyMesh();
+}
+
 void Skybox::DrawSkybox(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 {
+	if (!skyMesh) return;
 	viewMatrix = glm::mat4(glm::mat3(viewMatrix));
 
 	glDepthMask(false);
@@ -82,7 +113,7 @@ void Skybox::DrawSkybox(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 	glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, textureId);
+	glBindTexture(textureTarget, textureId);
 	//skyShader->Validate();
 	skyMesh->RenderMeshModel();
 	glDepthMask(true);

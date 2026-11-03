@@ -1,5 +1,9 @@
 #include "Model.h"
 #include <unordered_map>
+#include <unordered_set>
+#include <limits>
+#include <filesystem>
+#include <algorithm>
 
 
 Model::Model()
@@ -8,14 +12,21 @@ Model::Model()
 
 void Model::LoadModel(const std::string & fileName)
 {
+	directorioModelo = std::filesystem::path(fileName).parent_path().string();
 	Assimp::Importer importer;//					Pasa de Polygons y Quads a triangulos, modifica orden para el origen, generar normales si el  objeto no tiene, trata vértices iguales como 1 solo
-	//const aiScene *scene=importer.ReadFile(fileName,aiProcess_Triangulate |aiProcess_FlipUVs|aiProcess_GenSmoothNormals|aiProcess_JoinIdenticalVertices);
-	const aiScene *scene = importer.ReadFile(fileName, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices);
+	//const aiScene *scene=importer.ReadFile(fileName,aiProcess_Triangulate |aiProcess_FlipUVs|aiProcess_GenSmoothNormals|aiProcess_JoinIdenticalVertices | aiProcess_PreTransformVertices);
+	const aiScene *scene = importer.ReadFile(fileName, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices | aiProcess_PreTransformVertices);
 	if (!scene)
 	{	
 		printf("Falló en cargar el modelo: %s \n", fileName.c_str(), importer.GetErrorString());
 		return;
 	}
+    minimo = aiVector3D(1e30f); maximo = aiVector3D(-1e30f);
+    for (unsigned m=0; m<scene->mNumMeshes; ++m)
+        for (unsigned v=0; v<scene->mMeshes[m]->mNumVertices; ++v) {
+            const auto& p=scene->mMeshes[m]->mVertices[v];
+            for(int k=0;k<3;++k) { minimo[k]=(std::min)(minimo[k],p[k]); maximo[k]=(std::max)(maximo[k],p[k]); }
+        }
 	LoadNode(scene->mRootNode, scene);
 	LoadMaterials(scene);
 	}
@@ -32,11 +43,12 @@ void Model::ClearModel()
 		}
 	}
 
+	std::unordered_set<Texture*> liberadas;
 	for (unsigned int i = 0; i < TextureList.size(); i++)
 	{
 		if (TextureList[i])
 		{
-			delete TextureList[i];
+			if (liberadas.insert(TextureList[i]).second) delete TextureList[i];
 			TextureList[i] = nullptr;
 		}
 	}
@@ -48,7 +60,7 @@ void Model::RenderModel()
 	for (unsigned int i = 0; i < MeshList.size(); i++)
 	{
 		unsigned int materialIndex = meshTotex[i];
-		if (!materialIndex< TextureList.size()&& TextureList[materialIndex])
+		if (materialIndex < TextureList.size() && TextureList[materialIndex])
 		{
 			TextureList[materialIndex]->UseTexture();
 		}
@@ -112,100 +124,70 @@ void Model::LoadMesh(aiMesh * mesh, const aiScene * scene)
 	meshTotex.push_back(mesh->mMaterialIndex);
 }
 
-void Model::LoadMaterials(const aiScene * scene)
+void Model::LoadMaterials(const aiScene* scene)
 {
-	std::unordered_map<std::string, Texture*> loadedTextures; // Mapa para evitar duplicados
-	TextureList.resize(scene->mNumMaterials);
-	for (unsigned int i = 0; i < scene ->mNumMaterials; i++)
-	{
-		aiMaterial* material = scene->mMaterials[i];
-		TextureList[i] = nullptr;
-		if (material->GetTextureCount(aiTextureType_DIFFUSE	))
-		{
-			aiString path;
-			if (material->GetTexture(aiTextureType_DIFFUSE,0,&path)==AI_SUCCESS)
-			{
-				int idx;
-				std::string filename;
-				if (std::string(path.data).rfind("\\"))
-				{
-					//printf("entre a 1 / \n");
-					idx = std::string(path.data).rfind("\\");//para quitar del path del modelo todo lo que este antes del \ de ubicación de directorio
-					filename = std::string(path.data).substr(idx + 1);
-				}
-				/*else if(std::string(path.data).rfind("\\"))
-				{
-					printf(" entre a 2 \\  \n");
-					idx = std::string(path.data).rfind("\\");
-					filename = std::string(path.data).substr(idx + 1);
-				}*/
-				
-				
-				std::string tga ="tga";
-				std::string png = "png";
-				std::size_t existetga = filename.find(tga);
-				std::size_t existepng= filename.find(png);
-				std::string texPath = std::string("Textures/") + filename;
-				// Verifica si ya se cargó esta textura antes
-				auto it = loadedTextures.find(texPath);
-				if (it != loadedTextures.end())
-				{
-					TextureList[i] = it->second; // Reutiliza la textura ya cargada
-				}
-				else
-				{
-					Texture* newTex = new Texture(texPath.c_str());
-					std::string ext = filename.substr(filename.find_last_of('.') + 1);
-
-					bool loaded = false;
-					if (ext == "tga" || ext=="png")
-					{
-						loaded = newTex->LoadTextureA();
-					}
-					else
-					{
-						loaded = newTex->LoadTexture();
-					}
-
-					if (loaded)
-					{
-						TextureList[i] = newTex;
-						loadedTextures[texPath] = newTex; // Almacena para reutilizarla
-					}
-					else
-					{
-						printf("Falló en cargar la Textura :%s\n", texPath.c_str());
-						delete newTex;
-					}
-				}
-
-			/*	TextureList[i] = new Texture(texPath.c_str());
-				if (existetga != std::string::npos || existepng != std::string::npos)
-				{
-					if (!TextureList[i]->LoadTextureA())
-					{
-						printf("Falló en cargar la Textura :%s\n", texPath);
-						delete TextureList[i];
-						TextureList[i] = nullptr;
-					}
-				}
-				else
-				{
-					if (!TextureList[i]->LoadTexture())
-					{
-						printf("Falló en cargar la Textura :%s\n", texPath);
-						delete TextureList[i];
-						TextureList[i] = nullptr;
-					}
-				}*/
-			}
-		}
-		//Si no se pudo cargar la textura o no tiene una textura asignada, asignar una textura por defecto
-		if (!TextureList[i])
-		{
-			TextureList[i] = new Texture("Textures/plain.png"); //textura que se aplicará a los modelos si no tienen textura o la textura no se puede cargar
-			TextureList[i]->LoadTextureA();
-		}
-
-	}
+    std::unordered_map<std::string, Texture*> loadedTextures;
+    TextureList.resize(scene->mNumMaterials, nullptr);
+    for (unsigned int i = 0; i < scene->mNumMaterials; ++i) {
+        aiMaterial* material = scene->mMaterials[i];
+        aiString path;
+        // glTF usa BASE_COLOR; los OBJ conservan DIFFUSE como alternativa.
+        bool hasTexture = material->GetTexture(aiTextureType_BASE_COLOR, 0, &path) == AI_SUCCESS;
+        if (!hasTexture) hasTexture = material->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS;
+        TextureList[i] = nullptr;
+        if (hasTexture) {
+            const aiTexture* embedded = scene->GetEmbeddedTexture(path.C_Str());
+            std::string name = path.C_Str();
+            std::size_t slash = name.find_last_of("/\\");
+            std::string filename = slash == std::string::npos ? name : name.substr(slash + 1);
+            std::string texturePath = "Textures/" + filename;
+            if (!embedded) {
+                for (const auto& candidate : {directorioModelo + "/" + name,
+                     directorioModelo + "/" + filename,
+                     (directorioModelo.find("Equipo") != std::string::npos ? "Textures/Equipo/" : "Textures/") + filename,
+                     "Textures/" + filename}) {
+                    if (std::filesystem::exists(candidate)) { texturePath=candidate; break; }
+                }
+            }
+            std::string key = embedded ? "embedded:" + name : texturePath;
+            auto found = loadedTextures.find(key);
+            if (found != loadedTextures.end()) TextureList[i] = found->second;
+            else {
+                Texture* texture = embedded ? new Texture() : new Texture(key.c_str());
+                bool loaded = false;
+                if (embedded) {
+                    if (embedded->mHeight == 0 && embedded->mWidth <= static_cast<unsigned int>((std::numeric_limits<int>::max)())) {
+                        // mWidth representa bytes cuando la imagen esta comprimida.
+                        loaded = texture->LoadFromMemory(reinterpret_cast<const unsigned char*>(embedded->pcData), static_cast<int>(embedded->mWidth));
+                    } else if (embedded->mHeight > 0) {
+                        // aiTexel es BGRA: convertir a RGBA y voltear filas.
+                        std::vector<unsigned char> rgba(static_cast<size_t>(embedded->mWidth) * embedded->mHeight * 4);
+                        for (unsigned int y = 0; y < embedded->mHeight; ++y) {
+                            for (unsigned int x = 0; x < embedded->mWidth; ++x) {
+                                const aiTexel& p = embedded->pcData[(embedded->mHeight - 1 - y) * embedded->mWidth + x];
+                                size_t k = (static_cast<size_t>(y) * embedded->mWidth + x) * 4;
+                                rgba[k] = p.r; rgba[k+1] = p.g; rgba[k+2] = p.b; rgba[k+3] = p.a;
+                            }
+                        }
+                        loaded = texture->LoadRGBA(rgba.data(), embedded->mWidth, embedded->mHeight);
+                    }
+                } else {
+                    // Mantener las rutas y los metodos de carga de los OBJ existentes.
+                    std::string ext = filename.substr(filename.find_last_of('.') + 1);
+                    loaded = (ext == "png" || ext == "tga") ? texture->LoadTextureA() : texture->LoadTexture();
+                }
+                if (loaded) { TextureList[i] = texture; loadedTextures[key] = texture; }
+                else { printf("No se pudo cargar textura: %s\n", key.c_str()); delete texture; }
+            }
+        }
+        if (!TextureList[i]) {
+            aiColor4D diffuse(1,1,1,1);
+            material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
+            unsigned char rgba[4];
+            for(int k=0;k<3;++k) rgba[k]=static_cast<unsigned char>(255.0f*std::clamp(diffuse[k],0.0f,1.0f));
+            rgba[3]=255;
+            TextureList[i] = new Texture();
+            TextureList[i]->LoadRGBA(rgba,1,1);
+        }
+    }
 }

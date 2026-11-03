@@ -2,9 +2,9 @@
 
 #include <vector>
 #include <cmath>
-#include <GL/glew.h> 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include <glew.h> 
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
 
 struct TrackPoint {
     glm::vec3 position;
