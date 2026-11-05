@@ -33,6 +33,7 @@ Escenarios: 1 Espacio | 2 Valle helado | 3 Erid (Rocky + escenario del Debate)
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "Material.h"
+#include "PlanetaryRaceTrack.h"
 // Implementacion integrada para la entrega del equipo.
 // Los encabezados originales se conservan para poder separar el codigo despues.
 // ===== Integracion de CrepperDatos.h =====
@@ -378,7 +379,16 @@ bool saludo = true;
 Model rocky;
 Model brazoRocky;
 Model rocas1;
+PlanetaryRaceTrack pistaCarreras;
 
+
+// Configuración de los 4 vehículos (Carril, Velocidad, Inicio, Escala, GiroCorrección, Altura, Color)
+PlanetaryRaceTrack::RacerConfig corredores[4] = {
+	{ -3.3f, 22.0f,  0.0f, 0.8f, 180.0f, 0.45f, glm::vec3(1.0f, 0.25f, 0.25f) }, // Carril 1 (Izquierda exterior - Rojo)
+	{ -1.1f, 25.5f,  8.0f, 0.8f, 180.0f, 0.45f, glm::vec3(0.25f, 0.6f, 1.0f) }, // Carril 2 (Centro izq - Azul)
+	{ 1.1f, 23.5f, 16.0f, 0.8f, 180.0f, 0.45f, glm::vec3(0.3f, 1.0f, 0.35f) }, // Carril 3 (Centro der - Verde)
+	{ 3.3f, 27.0f, 24.0f, 0.8f, 180.0f, 0.45f, glm::vec3(1.0f, 0.85f, 0.2f) }  // Carril 4 (Derecha exterior - Amarillo)
+};
 // Modelos del Debate (se dibujan en el escenario 3)
 Model Podio_M;
 Model Kang_M;
@@ -400,6 +410,7 @@ Model antenaSat;
 Model panelDerSat;
 Model panelIzqSat;
 Model asteroides;
+
 
 // Skybox de nuestros escenarios
 Skybox skybox1;		// Skybox del espacio
@@ -586,6 +597,8 @@ int main(int argc, char** argv)
 	// Avatar (torso, cola, brazos, cinturón, barras y antena)
 	Avatar::iniciar();
 
+	pistaCarreras.invertNormals = true; // true para coincidir con las normales del piso y Model.cpp
+	pistaCarreras.buildMesh();
 	// Modelos del espacio
 	sol = Model();
 	sol.LoadModel("Models/sol.obj");
@@ -1050,6 +1063,29 @@ int main(int argc, char** argv)
 			glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 			rocas1.RenderModel();
 
+			// Dibujar Pista de Carreras en Erid
+			// 1. Matriz base de la pista
+			glm::mat4 matrizPista = glm::mat4(1.0f);
+			// matrizPista = glm::translate(matrizPista, glm::vec3(0.0f, 0.0f, -60.0f)); // Opcional
+
+			// 2. Dibujar Pista
+			color = glm::vec3(0.85f, 0.85f, 0.9f);
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(matrizPista));
+			glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+			dirtTexture.UseTexture();
+			Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+			pistaCarreras.draw();
+
+			// 3. Dibujar los 4 vehículos corriendo al mismo tiempo
+			for (int i = 0; i < 4; ++i) {
+				glm::mat4 modelVehiculo = pistaCarreras.getVehicleTransform(corredores[i], tiempoVuelo, matrizPista);
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelVehiculo));
+				glUniform3fv(uniformColor, 1, glm::value_ptr(corredores[i].tint));
+				Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+
+				// Usa el carro explorador ya cargado (o cámbialo por Avion_M / NaveAlien_M)
+				ValleHelado::explorador.RenderModel();
+			}
 			// Dibujar a Rocky
 			model = glm::mat4(1.0);
 			color = glm::vec3(1.0f, 1.0f, 1.0f);

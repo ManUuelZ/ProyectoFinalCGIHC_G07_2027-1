@@ -23,6 +23,8 @@ public:
     float wallH = 0.8f;
     float wallW = 0.6f;
 
+    bool invertNormals = false;
+
     struct PathSample {
         glm::vec3 pos;
         glm::vec3 fwd;
@@ -30,6 +32,16 @@ public:
         glm::vec3 right;
     };
     std::vector<PathSample> pathData;
+
+    struct RacerConfig {
+        float laneOffset;
+        float speed;
+        float startSample;
+        float scale;
+        float yawFixDeg;
+        float heightOffset;
+        glm::vec3 tint;
+    };
 
     PlanetaryRaceTrack() {
         setupDefaultTrack();
@@ -43,17 +55,17 @@ public:
 
     void setupDefaultTrack() {
         controlPoints = {
-            { glm::vec3(0.0f,  0.3f,    0.0f),   0.0f, false },
-            { glm::vec3(55.0f,  0.3f,    0.0f),   0.0f, false },
-            { glm::vec3(95.0f,  4.5f,   30.0f),  12.0f, false },
-            { glm::vec3(105.0f, 14.0f,   85.0f),   8.0f, false },
-            { glm::vec3(65.0f, 18.0f,  130.0f),  15.0f, false },
-            { glm::vec3(15.0f, 23.0f,  135.0f),   0.0f, true },
-            { glm::vec3(-35.0f,  8.0f,  125.0f),   0.0f, false },
-            { glm::vec3(-80.0f,  2.5f,   95.0f), -12.0f, false },
-            { glm::vec3(-55.0f,  1.5f,   55.0f),  12.0f, false },
-            { glm::vec3(-85.0f,  0.5f,   15.0f), -15.0f, false },
-            { glm::vec3(-45.0f,  0.3f,   -5.0f),   0.0f, false }
+            { glm::vec3(0.0f,   0.3f,   0.0f),   0.0f, false },
+            { glm::vec3(55.0f,  0.3f,   0.0f),   0.0f, false },
+            { glm::vec3(95.0f,  4.5f,  30.0f),  12.0f, false },
+            { glm::vec3(105.0f, 14.0f, 85.0f),   8.0f, false },
+            { glm::vec3(65.0f,  18.0f, 130.0f), 15.0f, false },
+            { glm::vec3(15.0f,  23.0f, 135.0f),  0.0f, true },
+            { glm::vec3(-35.0f, 8.0f,  125.0f),  0.0f, false },
+            { glm::vec3(-80.0f, 2.5f,  95.0f), -12.0f, false },
+            { glm::vec3(-55.0f, 1.5f,  55.0f),  12.0f, false },
+            { glm::vec3(-85.0f, 0.5f,  15.0f), -15.0f, false },
+            { glm::vec3(-45.0f, 0.3f,  -5.0f),   0.0f, false }
         };
     }
 
@@ -69,6 +81,10 @@ public:
     }
 
     void buildMesh() {
+        if (eboID) { glDeleteBuffers(1, &eboID); eboID = 0; }
+        if (vboID) { glDeleteBuffers(1, &vboID); vboID = 0; }
+        if (vaoID) { glDeleteVertexArrays(1, &vaoID); vaoID = 0; }
+
         std::vector<float> vData;
         std::vector<unsigned int> iData;
         pathData.clear();
@@ -77,6 +93,7 @@ public:
         int totalFrames = nPts * smoothSteps;
         float uvMult = 0.20f;
         const int vertsPerSlice = 6;
+        const float nSign = invertNormals ? -1.0f : 1.0f;
 
         for (int i = 0; i <= totalFrames; ++i) {
             int segment = (i / smoothSteps) % nPts;
@@ -119,7 +136,7 @@ public:
             for (int k = 0; k < vertsPerSlice; ++k) {
                 vData.push_back(pts[k].x); vData.push_back(pts[k].y); vData.push_back(pts[k].z);
                 vData.push_back(uvs[k]);   vData.push_back(vc);
-                vData.push_back(nms[k].x); vData.push_back(nms[k].y); vData.push_back(nms[k].z);
+                vData.push_back(nSign * nms[k].x); vData.push_back(nSign * nms[k].y); vData.push_back(nSign * nms[k].z);
             }
         }
 
@@ -158,6 +175,49 @@ public:
         glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, st, (void*)(5 * sizeof(float)));
         glEnableVertexAttribArray(2);
         glBindVertexArray(0);
+    }
+
+    glm::mat4 getVehicleTransform(const RacerConfig& rc, float timeSec, const glm::mat4& trackTransform = glm::mat4(1.0f)) const {
+        if (pathData.empty()) return glm::mat4(1.0f);
+
+        int N = static_cast<int>(pathData.size());
+        float cursor = std::fmod(rc.startSample + timeSec * rc.speed, static_cast<float>(N));
+        if (cursor < 0.0f) cursor += N;
+
+        int idx0 = static_cast<int>(cursor) % N;
+        int idx1 = (idx0 + 1) % N;
+        float alpha = cursor - std::floor(cursor);
+
+        const PathSample& s0 = pathData[idx0];
+        const PathSample& s1 = pathData[idx1];
+
+        glm::vec3 pos = glm::mix(s0.pos, s1.pos, alpha);
+        glm::vec3 fwd = glm::normalize(glm::mix(s0.fwd, s1.fwd, alpha));
+        glm::vec3 up = glm::normalize(glm::mix(s0.up, s1.up, alpha));
+        glm::vec3 right = glm::normalize(glm::cross(fwd, up));
+        up = glm::normalize(glm::cross(right, fwd));
+
+        int nPts = static_cast<int>(controlPoints.size());
+        int seg = (idx0 / smoothSteps) % nPts;
+        float localT = static_cast<float>(idx0 % smoothSteps + alpha) / smoothSteps;
+        float jumpArc = 0.0f;
+        if (controlPoints[seg].isJump && localT > 0.55f) {
+            float u = (localT - 0.55f) / 0.45f;
+            jumpArc = 4.0f * u * (1.0f - u) * 3.5f;
+        }
+
+        glm::vec3 worldPos = pos + right * rc.laneOffset + up * (rc.heightOffset + jumpArc);
+
+        glm::mat4 orient(1.0f);
+        orient[0] = glm::vec4(right, 0.0f);
+        orient[1] = glm::vec4(up, 0.0f);
+        orient[2] = glm::vec4(-fwd, 0.0f);
+        orient[3] = glm::vec4(worldPos, 1.0f);
+
+        glm::mat4 model = trackTransform * orient;
+        model = glm::rotate(model, glm::radians(rc.yawFixDeg), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(rc.scale));
+        return model;
     }
 
     void draw() const {
