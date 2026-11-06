@@ -1,0 +1,54 @@
+# Blender 5.2.0 LTS MTL File: 'hextech.blend'
+# www.blender.org
+
+newmtl Mat.2
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd ../../../../hextech/Image_0.001.jpg
+map_Bump -bm 1.000000 ../../../../hextech/Image_2.001.png
+
+newmtl Material.001
+Ns 1000.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 1.000000 0.942227
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl lambert2
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd ../../../../hextech/Image_0.png
+map_Ke ../../../../hextech/Image_2.png
+map_Bump -bm 1.000000 ../../../../hextech/Image_3.png
+
+newmtl plasma1
+Ns 1000.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd ../../../../hextech/cristal.jpg
+
+newmtl plat_metal
+Ns 328.016510
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd ../../../../hextech/metal.jpg

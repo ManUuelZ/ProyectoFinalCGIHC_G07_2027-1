@@ -1,0 +1,32 @@
+# Blender 5.2.0 LTS MTL File: 'Estación Espacial.blend'
+# www.blender.org
+
+newmtl Material.001
+Ns 1000.000000
+Ka 0.581818 0.581818 0.581818
+Ks 0.563636 0.563636 0.563636
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd ../../../../estacion/ESTACION ESPACIAL/abstract-grunge-texture-yellow-color-splash-paint-background-vector.jpg
+
+newmtl Material.002
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd ../../../../estacion/ESTACION ESPACIAL/azull.jpg
+
+newmtl interior
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd ../../../../estacion/ESTACION ESPACIAL/pngtree-sci-fi-product-presentation-stage-podium-in-interior-of-spaceship-or-image_3830641.jpg
