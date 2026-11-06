@@ -159,6 +159,11 @@ namespace ValleHelado {
 	inline Model torre;
 	inline Model aurelion;
 	inline Model explorador;
+	inline Model antenaMickey;
+	inline Model edificioValle1;
+	inline Model edificioValle2;
+	inline Model hospitalValle;
+
 	inline MeshModel terreno;
 	inline Texture piso;
 	inline Skybox cielo;
@@ -208,6 +213,20 @@ salida=vec4(base*luz,1);
 		return glm::translate(matriz, glm::vec3(-(a.x + b.x) * .5f, -a.y, -(a.z + b.z) * .5f));
 	}
 	inline bool iniciar() {
+		// Antena Mickey: carga directa, igual que los modelos de Erid.
+		antenaMickey = Model();
+		antenaMickey.LoadModel("Models/antenaMickey.obj");
+
+		// Edificios nevados: carga directa como los objetos de Erid.
+		edificioValle1 = Model();
+		edificioValle1.LoadModel("Models/EdificioValle1.obj");
+		edificioValle2 = Model();
+		edificioValle2.LoadModel("Models/EdificioValle2.obj");
+		hospitalValle = Model();
+		hospitalValle.LoadModel("Models/HospitalValle.obj");
+
+
+
 		for (int i = 1; i < CrepperDatos::cantidad; ++i) {
 			piezas[i].LoadModel(CrepperDatos::nodos[i].archivo);
 			if (!piezas[i].cargado()) return false;
@@ -293,7 +312,7 @@ salida=vec4(base*luz,1);
 		terreno.RenderMeshModel();
 
 
-		// Modelos de Planeta 1 (companeros): torre Hextech, Aurelion Sol y carro explorador
+		// Modelos de Planeta 1 torre Hextech, Aurelion Sol y carro explorador
 		auto mTorre = colocar(torre, { -58.f,0.f,-55.f }, 46.f);
 		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(mTorre));
 		torre.RenderModel();
@@ -310,7 +329,47 @@ salida=vec4(base*luz,1);
 		explorador.RenderModel();
 
 
-		// Crepper NPC jerarquizado
+		// Antena valle helado.
+		glm::mat4 modelAntena = glm::mat4(1.0f);
+		modelAntena = glm::translate(modelAntena, glm::vec3(70.0f, 18.545733f, 25.0f));
+		modelAntena = glm::rotate(modelAntena, glm::radians(-30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		modelAntena = glm::scale(modelAntena, glm::vec3(0.05f, 0.05f, 0.05f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(modelAntena));
+		glUniform3f(locTinte, 1.0f, 1.0f, 1.0f);
+		glUniform1i(locUsarTex, 1);
+		antenaMickey.RenderModel();
+
+		// Edificio 1: sector izquierdo, con la base apoyada en el piso.
+		glm::mat4 modelEdificio1 = glm::mat4(1.0f);
+		modelEdificio1 = glm::translate(modelEdificio1, glm::vec3(-90.0f, 0.0f, -105.0f));
+		modelEdificio1 = glm::scale(modelEdificio1, glm::vec3(10.0f));
+		modelEdificio1 = glm::translate(modelEdificio1, glm::vec3(1.0732105f, 0.007146f, -7.0602285f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(modelEdificio1));
+		glUniform3f(locTinte, 1.0f, 1.0f, 1.0f);
+		glUniform1i(locUsarTex, 1);
+		edificioValle1.RenderModel();
+
+		// Edificio 2: al fondo, dejando libre la zona de la torre.
+		glm::mat4 modelEdificio2 = glm::mat4(1.0f);
+		modelEdificio2 = glm::translate(modelEdificio2, glm::vec3(5.0f, 0.0f, -125.0f));
+		modelEdificio2 = glm::scale(modelEdificio2, glm::vec3(10.0f));
+		modelEdificio2 = glm::translate(modelEdificio2, glm::vec3(-0.0095675f, 0.004131f, -2.132702f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(modelEdificio2));
+		glUniform3f(locTinte, 1.0f, 1.0f, 1.0f);
+		glUniform1i(locUsarTex, 1);
+		edificioValle2.RenderModel();
+
+		// Hospital: sector derecho del valle.
+		glm::mat4 modelHospital = glm::mat4(1.0f);
+		modelHospital = glm::translate(modelHospital, glm::vec3(90.0f, 0.0f, -95.0f));
+		modelHospital = glm::scale(modelHospital, glm::vec3(8.0f));
+		modelHospital = glm::translate(modelHospital, glm::vec3(1.110245f, 0.029977f, -6.8515425f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(modelHospital));
+		glUniform3f(locTinte, 1.0f, 1.0f, 1.0f);
+		glUniform1i(locUsarTex, 1);
+		hospitalValle.RenderModel();
+
+		// Crepper  jerarquizado
 		glUniform1i(locUsarTex, 0);
 		auto pose = CrepperNPC::evaluar(tiempo);
 		for (int i = 1; i < CrepperDatos::cantidad; ++i) {
@@ -325,21 +384,10 @@ salida=vec4(base*luz,1);
 		}
 		glUseProgram(0);
 	}
-	inline void captura(const std::string& ruta) {
-		int w, h; glfwGetFramebufferSize(glfwGetCurrentContext(), &w, &h);
-		std::vector<unsigned char> datos(w * h * 3);
-		glPixelStorei(GL_PACK_ALIGNMENT, 1); glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, datos.data());
-		std::ofstream f(ruta, std::ios::binary);
-		f << "P6\n" << w << " " << h << "\n255\n";
-		for (int y = h - 1; y >= 0; --y)f.write(reinterpret_cast<char*>(datos.data() + y * w * 3), w * 3);
-	}
-	inline void captura(int numero) {
-		captura("x64/Practica9/valle_" + std::to_string(numero) + ".ppm");
-	}
+	
 }
 
 
-// ===== Fin de la integracion del Crepper y valle helado =====
 #include "EscenarioDebate.h"   // Escenario del Debate (se dibuja dentro del escenario 3, Erid)
 #include "Avatar.h"             // Avatar jerárquico con movimiento (escenario 3)
 
@@ -1116,13 +1164,11 @@ int main(int argc, char** argv)
 			glUseProgram(0);
 
 			if (verificarValle) {
-				if (framePrueba == 0 || framePrueba == 120 || framePrueba == 240) ValleHelado::captura(framePrueba);
 				GLenum error = glGetError();
 				if (error != GL_NO_ERROR) { printf("GL ERROR: %u\n", error); falloGL = true; }
 				if (++framePrueba > 240) break;
 			}
 			else if (verificarTodo) {
-				if (framePrueba == 30) ValleHelado::captura("x64/Practica9/escena2.ppm");
 				if (++framePrueba > 62) break;
 			}
 			mainWindow.swapBuffers();
@@ -1559,8 +1605,6 @@ int main(int argc, char** argv)
 
 
 		if (verificarTodo) {
-			if (framePrueba == 0) ValleHelado::captura("x64/Practica9/escena1.ppm");
-			if (framePrueba == 61) ValleHelado::captura("x64/Practica9/escena3.ppm");
 			if (++framePrueba > 62) break;
 		}
 

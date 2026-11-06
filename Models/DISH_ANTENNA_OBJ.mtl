@@ -1,0 +1,82 @@
+# Metal gris con oxido ligero y desgaste para antenaMickey.obj
+
+newmtl Balkon
+Ka 0.2 0.2 0.2
+Kd 1.0 1.0 1.0
+Ks 0.15 0.15 0.15
+Ns 20.0
+d 1.0
+illum 2
+map_Kd ../Textures/antenaMickey_oxido.png
+
+newmtl wire_087224198
+Ka 0.2 0.2 0.2
+Kd 1.0 1.0 1.0
+Ks 0.15 0.15 0.15
+Ns 20.0
+d 1.0
+illum 2
+map_Kd ../Textures/antenaMickey_oxido.png
+
+newmtl wire_088143225
+Ka 0.2 0.2 0.2
+Kd 1.0 1.0 1.0
+Ks 0.15 0.15 0.15
+Ns 20.0
+d 1.0
+illum 2
+map_Kd ../Textures/antenaMickey_oxido.png
+
+newmtl wire_088177026
+Ka 0.2 0.2 0.2
+Kd 1.0 1.0 1.0
+Ks 0.15 0.15 0.15
+Ns 20.0
+d 1.0
+illum 2
+map_Kd ../Textures/antenaMickey_oxido.png
+
+newmtl wire_154185229
+Ka 0.2 0.2 0.2
+Kd 1.0 1.0 1.0
+Ks 0.15 0.15 0.15
+Ns 20.0
+d 1.0
+illum 2
+map_Kd ../Textures/antenaMickey_oxido.png
+
+newmtl wire_166229229
+Ka 0.2 0.2 0.2
+Kd 1.0 1.0 1.0
+Ks 0.15 0.15 0.15
+Ns 20.0
+d 1.0
+illum 2
+map_Kd ../Textures/antenaMickey_oxido.png
+
+newmtl wire_177148026
+Ka 0.2 0.2 0.2
+Kd 1.0 1.0 1.0
+Ks 0.15 0.15 0.15
+Ns 20.0
+d 1.0
+illum 2
+map_Kd ../Textures/antenaMickey_oxido.png
+
+newmtl wire_213154229
+Ka 0.2 0.2 0.2
+Kd 1.0 1.0 1.0
+Ks 0.15 0.15 0.15
+Ns 20.0
+d 1.0
+illum 2
+map_Kd ../Textures/antenaMickey_oxido.png
+
+newmtl wire_224143087
+Ka 0.2 0.2 0.2
+Kd 1.0 1.0 1.0
+Ks 0.15 0.15 0.15
+Ns 20.0
+d 1.0
+illum 2
+map_Kd ../Textures/antenaMickey_oxido.png

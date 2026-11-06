@@ -1,0 +1,19 @@
+# Variante nevada; geometria y UV originales conservados.
+
+newmtl High_building_2_
+Ka 0.2 0.2 0.2
+Kd 1.0 1.0 1.0
+Ks 0.15 0.15 0.15
+Ns 20.0
+d 1.0
+illum 2
+map_Kd ../Textures/EdificioValle2_nieve.png
+
+newmtl High_building_2_light
+Ka 0.2 0.2 0.2
+Kd 1.0 1.0 1.0
+Ks 0.15 0.15 0.15
+Ns 20.0
+d 1.0
+illum 2
+map_Kd ../Textures/EdificioValle2_luces.png

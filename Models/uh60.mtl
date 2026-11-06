@@ -11,7 +11,7 @@ Kd 1 1 1
 Ks 0.9 0.9 0.9
 illum 2
 Ns 17.1484
-map_Kd fuselage.jpg
+map_Kd ../Textures/uh60_oliva_desgastado.png
 map_bump 
 bump 
 map_opacity 
@@ -60,7 +60,7 @@ Kd 1 1 1
 Ks 0.9 0.9 0.9
 illum 2
 Ns 34.2967
-map_Kd pal.jpg
+map_Kd ../Textures/pal.jpg
 map_bump 
 bump 
 map_opacity 
@@ -76,7 +76,7 @@ Kd 1 1 1
 Ks 0.9 0.9 0.9
 illum 2
 Ns 21.1121
-map_Kd Plt.jpg
+map_Kd ../Textures/Plt.jpg
 map_bump 
 bump 
 map_opacity 
@@ -109,7 +109,7 @@ Kd 1 1 1
 Ks 0.9 0.9 0.9
 illum 2
 Ns 13.9288
-map_Kd panel.jpg
+map_Kd ../Textures/panel.jpg
 map_bump 
 bump 
 map_opacity 
@@ -158,7 +158,7 @@ Kd 1 1 1
 Ks 0.9 0.9 0.9
 illum 2
 Ns 25.9921
-map_Kd land.jpg
+map_Kd ../Textures/land.jpg
 map_bump 
 bump 
 map_opacity 
