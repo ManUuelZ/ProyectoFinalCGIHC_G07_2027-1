@@ -37,9 +37,6 @@ Escenarios: 1 Espacio | 2 Valle helado | 3 Erid (Rocky + escenario del Debate)
 #include "SpotLight.h"
 #include "Material.h"
 #include "PlanetaryRaceTrack.h"
-// Implementacion integrada para la entrega del equipo.
-// Los encabezados originales se conservan para poder separar el codigo despues.
-// ===== Integracion de CrepperDatos.h =====
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <array>
@@ -95,13 +92,13 @@ namespace CrepperDatos {
 } // namespace CrepperDatos
 
 
-// ===== Integracion de CrepperNPC.h =====
+// ===== Integracion de Crepper
 #include <cmath>
 #include <cstring>
 #include <algorithm>
 
 
-// Aportacion de Angel: logica independiente de OpenGL.
+// logica independiente de OpenGL.
 namespace CrepperNPC {
 	constexpr double pi = 3.14159265358979323846;
 	constexpr float radioRecorrido = 40, velocidad = 6, escala = 3;
@@ -153,7 +150,7 @@ namespace CrepperNPC {
 #include "Texture.h"
 
 
-// Escenario 2: Valle helado con Crepper NPC y modelos de Planeta 1.
+// Escenario 2: Valle helado y modelos de Planeta 1.
 namespace ValleHelado {
 	inline Model piezas[CrepperDatos::cantidad];
 	inline Model torre;
@@ -213,11 +210,11 @@ salida=vec4(base*luz,1);
 		return glm::translate(matriz, glm::vec3(-(a.x + b.x) * .5f, -a.y, -(a.z + b.z) * .5f));
 	}
 	inline bool iniciar() {
-		// Antena Mickey: carga directa, igual que los modelos de Erid.
+		// Antena Mickey: 
 		antenaMickey = Model();
 		antenaMickey.LoadModel("Models/antenaMickey.obj");
 
-		// Edificios nevados: carga directa como los objetos de Erid.
+		// Edificios planeta Lol y mickey
 		edificioValle1 = Model();
 		edificioValle1.LoadModel("Models/EdificioValle1.obj");
 		edificioValle2 = Model();
@@ -231,7 +228,7 @@ salida=vec4(base*luz,1);
 			piezas[i].LoadModel(CrepperDatos::nodos[i].archivo);
 			if (!piezas[i].cargado()) return false;
 		}
-		// NOTA: torre se sigue dibujando en dibujar(); mantener su carga.
+
 		if (!cargarModelo(aurelion, { "Models/aurelion sol.glb","Models/Equipo/aurelion sol.glb" })) return false;
 		if (!cargarModelo(explorador, { "Models/carroexplorador.obj","Models/Equipo/carroexplorador.obj" })) return false;
 		const char* rutaPiso = nullptr;
@@ -339,7 +336,7 @@ salida=vec4(base*luz,1);
 		glUniform1i(locUsarTex, 1);
 		antenaMickey.RenderModel();
 
-		// Edificio 1: sector izquierdo, con la base apoyada en el piso.
+		// Edificio 1
 		glm::mat4 modelEdificio1 = glm::mat4(1.0f);
 		modelEdificio1 = glm::translate(modelEdificio1, glm::vec3(-90.0f, 0.0f, -105.0f));
 		modelEdificio1 = glm::scale(modelEdificio1, glm::vec3(10.0f));
@@ -349,7 +346,7 @@ salida=vec4(base*luz,1);
 		glUniform1i(locUsarTex, 1);
 		edificioValle1.RenderModel();
 
-		// Edificio 2: al fondo, dejando libre la zona de la torre.
+		// Edificio 2:
 		glm::mat4 modelEdificio2 = glm::mat4(1.0f);
 		modelEdificio2 = glm::translate(modelEdificio2, glm::vec3(5.0f, 0.0f, -125.0f));
 		modelEdificio2 = glm::scale(modelEdificio2, glm::vec3(10.0f));
@@ -359,7 +356,7 @@ salida=vec4(base*luz,1);
 		glUniform1i(locUsarTex, 1);
 		edificioValle2.RenderModel();
 
-		// Hospital: sector derecho del valle.
+		// Hospital
 		glm::mat4 modelHospital = glm::mat4(1.0f);
 		modelHospital = glm::translate(modelHospital, glm::vec3(90.0f, 0.0f, -95.0f));
 		modelHospital = glm::scale(modelHospital, glm::vec3(8.0f));
