@@ -1,4 +1,4 @@
-# Blender 5.2.2 LTS MTL File: 'Aurelio.blend'
+# Blender 5.2.2 LTS MTL File: 'Untitled.blend'
 # www.blender.org
 
 newmtl Material.006
@@ -9,4 +9,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd TorsoAurelio_color.png
+map_Kd C:/Users/sergi/Downloads/TorsoAurelio_color.png
