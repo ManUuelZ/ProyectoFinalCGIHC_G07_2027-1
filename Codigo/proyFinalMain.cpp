@@ -30,7 +30,7 @@ Escenarios: 1 Espacio | 2 Valle helado | 3 Erid (Rocky + escenario del Debate)
 #include "Skybox.h"
 
 
-//para iluminaciÛn
+//para iluminaci√≥n
 #include "CommonValues.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
@@ -117,7 +117,7 @@ namespace CrepperNPC {
 		mundo = glm::rotate(mundo, std::atan2(-frente.x, -frente.z), glm::vec3(0, 1, 0));
 		mundo = glm::scale(mundo, glm::vec3(escala));
 		CrepperDatos::Matrices rotaciones;
-		for (int i = 0;i < CrepperDatos::cantidad;++i) {
+		for (int i = 0; i < CrepperDatos::cantidad; ++i) {
 			rotaciones[i] = glm::mat4(1);
 			const char* nombre = CrepperDatos::nodos[i].nombre;
 			if (std::strncmp(nombre, "pata_", 5) == 0) {
@@ -208,11 +208,11 @@ salida=vec4(base*luz,1);
 		return glm::translate(matriz, glm::vec3(-(a.x + b.x) * .5f, -a.y, -(a.z + b.z) * .5f));
 	}
 	inline bool iniciar() {
-		for (int i = 1;i < CrepperDatos::cantidad;++i) {
+		for (int i = 1; i < CrepperDatos::cantidad; ++i) {
 			piezas[i].LoadModel(CrepperDatos::nodos[i].archivo);
 			if (!piezas[i].cargado()) return false;
 		}
-		if (!cargarModelo(torre, { "Models/torre de lanzamiento.glb","Models/Equipo/torre de lanzamiento.glb" })) return false;
+		// NOTA: torre se sigue dibujando en dibujar(); mantener su carga.
 		if (!cargarModelo(aurelion, { "Models/aurelion sol.glb","Models/Equipo/aurelion sol.glb" })) return false;
 		if (!cargarModelo(explorador, { "Models/carroexplorador.obj","Models/Equipo/carroexplorador.obj" })) return false;
 		const char* rutaPiso = nullptr;
@@ -313,7 +313,7 @@ salida=vec4(base*luz,1);
 		// Crepper NPC jerarquizado
 		glUniform1i(locUsarTex, 0);
 		auto pose = CrepperNPC::evaluar(tiempo);
-		for (int i = 1;i < CrepperDatos::cantidad;++i) {
+		for (int i = 1; i < CrepperDatos::cantidad; ++i) {
 			const char* nombre = CrepperDatos::nodos[i].nombre;
 			glm::vec3 color(.53f, .59f, .58f);
 			if (std::strncmp(nombre, "ojo_", 4) == 0) color = { .018f,.025f,.025f };
@@ -326,12 +326,12 @@ salida=vec4(base*luz,1);
 		glUseProgram(0);
 	}
 	inline void captura(const std::string& ruta) {
-		int w, h;glfwGetFramebufferSize(glfwGetCurrentContext(), &w, &h);
+		int w, h; glfwGetFramebufferSize(glfwGetCurrentContext(), &w, &h);
 		std::vector<unsigned char> datos(w * h * 3);
 		glPixelStorei(GL_PACK_ALIGNMENT, 1); glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, datos.data());
 		std::ofstream f(ruta, std::ios::binary);
 		f << "P6\n" << w << " " << h << "\n255\n";
-		for (int y = h - 1;y >= 0;--y)f.write(reinterpret_cast<char*>(datos.data() + y * w * 3), w * 3);
+		for (int y = h - 1; y >= 0; --y)f.write(reinterpret_cast<char*>(datos.data() + y * w * 3), w * 3);
 	}
 	inline void captura(int numero) {
 		captura("x64/Practica9/valle_" + std::to_string(numero) + ".ppm");
@@ -341,7 +341,7 @@ salida=vec4(base*luz,1);
 
 // ===== Fin de la integracion del Crepper y valle helado =====
 #include "EscenarioDebate.h"   // Escenario del Debate (se dibuja dentro del escenario 3, Erid)
-#include "Avatar.h"             // Avatar jer·rquico con movimiento (escenario 3)
+#include "Avatar.h"             // Avatar jer√°rquico con movimiento (escenario 3)
 
 
 const float toRadians = 3.14159265f / 180.0f;
@@ -403,8 +403,13 @@ bool saludo = true;
 // Variable para el avatar
 bool camaraLigadaAvatar = true;
 
-// ----- Lista de Modelos a importar -----
 
+
+//animacion plataforma
+float anguloCirculoHex = 0.0f;
+float anguloSemiAro = 0.0f;
+
+// ----- Lista de Modelos a importar -----
 
 // Planeta 2
 
@@ -420,7 +425,7 @@ Model NaveAlien_M;
 
 Model naveEspacial;
 
-// ConfiguraciÛn de los 4 vehÌculos (Carril, Velocidad, Inicio, Escala, GiroCorrecciÛn, Altura, Color)
+// Configuraci√≥n de los 4 veh√≠culos (Carril, Velocidad, Inicio, Escala, GiroCorrecci√≥n, Altura, Color)
 PlanetaryRaceTrack::RacerConfig corredores[4] = {
 	{ -3.3f, 22.0f,  0.0f, 0.8f, 180.0f, 0.45f, glm::vec3(1.0f, 0.25f, 0.25f) }, // Carril 1 (Izquierda exterior - Rojo)
 	{ -1.1f, 25.5f,  8.0f, 0.8f, 180.0f, 0.45f, glm::vec3(0.25f, 0.6f, 1.0f) }, // Carril 2 (Centro izq - Azul)
@@ -442,7 +447,25 @@ Model panelDerSat;
 Model panelIzqSat;
 Model asteroides;
 
+//para la plataforma
+Model BasePlataforma_M;
+Model NucleoPlataforma_M;
+Model CirculoHex_M;
+Model TorrePlataforma_M;
+Model EsferaPlataforma_M;
+Model SemiaroPlataforma_M;
+Model AndamioIzqPlataforma_M;
+Model AndamioDerPlataforma_M;
+//Estacion Espacial
+Model EstacionCabina_M;
+Model EstacionEstructura_M;
+Model EstacionPanelDerecho_M;
+Model EstacionPanelIzquierdo_M;
+Model EstacionCapsulasDer_M;
+Model EstacionCapsulasIzq_M;
 
+Model EstacionPuertaIzq_M;
+Model EstacionPuertaDer_M;
 
 
 // Skybox de nuestros escenarios
@@ -484,7 +507,7 @@ static const char* TITULO_VENTANA = "Proyecto final | 1 Espacio | 2 Valle helado
 
 
 
-//funciÛn de calculo de normales por promedio de vÈrtices 
+//funci√≥n de calculo de normales por promedio de v√©rtices 
 void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount,
 	unsigned int vLength, unsigned int normalOffset)
 {
@@ -665,7 +688,7 @@ int main(int argc, char** argv)
 	naveEspacial = Model();
 	naveEspacial.LoadModel("Models/naveEspacial.obj");
 
-	// Avatar (torso, cola, brazos, cinturÛn, barras y antena)
+	// Avatar (torso, cola, brazos, cintur√≥n, barras y antena)
 	Avatar::iniciar();
 
 
@@ -711,8 +734,65 @@ int main(int argc, char** argv)
 	asteroides = Model();
 	asteroides.LoadModel("Models/asteroides.obj");
 
+	//PLATAFORMA
 
-	// ----- ConfiguraciÛn Skybox Escenario 1 -----
+	BasePlataforma_M = Model();
+	BasePlataforma_M.LoadModel("Models/BasePlataforma.obj");
+
+	TorrePlataforma_M = Model();
+	TorrePlataforma_M.LoadModel("Models/TorrePlataforma.obj");
+
+	CirculoHex_M = Model();
+	CirculoHex_M.LoadModel("Models/CirculoPlataforma.obj");
+
+	AndamioIzqPlataforma_M = Model();
+	AndamioIzqPlataforma_M.LoadModel("Models/AndamioIzqPlataforma.obj");
+
+	AndamioDerPlataforma_M = Model();
+	AndamioDerPlataforma_M.LoadModel("Models/AndamioDerPlataforma.obj");
+
+
+	EsferaPlataforma_M = Model();
+	EsferaPlataforma_M.LoadModel("Models/EsferaPlataforma.obj");
+
+	SemiaroPlataforma_M = Model();
+	SemiaroPlataforma_M.LoadModel("Models/Semiaro.obj");
+
+	NucleoPlataforma_M = Model();
+	NucleoPlataforma_M.LoadModel("Models/NucleoPlataforma.obj");
+
+	//ESTACION ESPACIAL
+
+	EstacionCabina_M = Model();
+	EstacionCabina_M.LoadModel("Models/EstacionCabina.obj");
+
+	EstacionEstructura_M = Model();
+	EstacionEstructura_M.LoadModel("Models/EstacionEstructura.obj");
+
+	EstacionPanelDerecho_M = Model();
+	EstacionPanelDerecho_M.LoadModel("Models/EstacionPanelDerecho.obj");
+
+	EstacionPanelIzquierdo_M = Model();
+	EstacionPanelIzquierdo_M.LoadModel("Models/EstacionPanelIzquierdo.obj");
+
+	EstacionCapsulasDer_M = Model();
+	EstacionCapsulasDer_M.LoadModel("Models/EstacionCapsulasDer.obj");
+
+	EstacionCapsulasIzq_M = Model();
+	EstacionCapsulasIzq_M.LoadModel("Models/EstacionCapsulasIzq.obj");
+
+	EstacionPuertaIzq_M = Model();
+	EstacionPuertaIzq_M.LoadModel("Models/EstacionPuertaIzq.obj");
+
+	EstacionPuertaDer_M = Model();
+	EstacionPuertaDer_M.LoadModel("Models/EstacionPuertaDer.obj");
+
+
+
+
+
+
+	// ----- Configuraci√≥n Skybox Escenario 1 -----
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/espacio_rt.tga");
 	skyboxFaces.push_back("Textures/Skybox/espacio_lf.tga");
@@ -725,7 +805,7 @@ int main(int argc, char** argv)
 	skybox1 = Skybox(skyboxFaces);
 
 
-	// ----- ConfiguraciÛn Skybox Escenario 2 (Planeta 1)-----
+	// ----- Configuraci√≥n Skybox Escenario 2 (Planeta 1)-----
 	std::vector<std::string> skyboxFaces2;
 	skyboxFaces2.push_back("Textures/Skybox/planeta1_rt.tga");
 	skyboxFaces2.push_back("Textures/Skybox/planeta1_lf.tga");
@@ -736,7 +816,7 @@ int main(int argc, char** argv)
 	skybox2 = Skybox(skyboxFaces2);
 
 
-	// ----- ConfiguraciÛn Skybox Escenario 3 (Planeta 2) -----
+	// ----- Configuraci√≥n Skybox Escenario 3 (Planeta 2) -----
 	std::vector<std::string> skyboxFaces3;
 	skyboxFaces3.push_back("Textures/Skybox/erid_right.jpg");
 	skyboxFaces3.push_back("Textures/Skybox/erid_left.jpg");
@@ -753,7 +833,7 @@ int main(int argc, char** argv)
 	unsigned int pointLightCount = 0;
 
 
-	//DeclaraciÛn de primer luz puntual (Modelo del Sol)
+	//Declaraci√≥n de primer luz puntual (Modelo del Sol)
 	pointLights[0] = PointLight(1.0f, 0.75f, 0.0f,
 		5.0f, 5.0f,
 		0.0f, 75.0f, -150.0f,
@@ -761,7 +841,7 @@ int main(int argc, char** argv)
 	pointLightCount++;
 
 
-	//DeclaraciÛn de segunda luz puntual
+	//Declaraci√≥n de segunda luz puntual
 	pointLights[1] = PointLight(1.0f, 1.0f, 1.0f,
 		0.8f, 0.8f,
 		0.0f, 0.0f, 150.0f,
@@ -777,8 +857,15 @@ int main(int argc, char** argv)
 	pointLightCount++;
 	unsigned int spotLightCount = 0;
 
+	// Luz puntual del n√∫cleo Hextech de la plataforma (escenario 2)
+	int indicePuntualHextech = pointLightCount;
+	pointLights[indicePuntualHextech] = PointLight(0.1f, 0.65f, 1.0f,
+		0.5f, 1.8f,
+		10.5f, 20.5f, -30.0f,
+		1.0f, 0.045f, 0.0075f);
+	pointLightCount++;
 
-	//linterna (Ìndice 0)
+	//linterna (√≠ndice 0)
 	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
 		0.0f, 2.0f,
 		0.0f, 0.0f, 0.0f,
@@ -788,14 +875,14 @@ int main(int argc, char** argv)
 	spotLightCount++;
 
 
-	// Reflectores del debate + rayo abductor (Ìndices 1, 2 y 3) -> spotLightCount = 4
+	// Reflectores del debate + rayo abductor (√≠ndices 1, 2 y 3) -> spotLightCount = 4
 	EscenarioDebate::AgregarSpotLights(spotLights, spotLightCount);
 
 	int indiceFaroNave = spotLightCount;
 	spotLights[spotLightCount] = SpotLight(1.0f, 1.0f, 1.0f,
 		1.0f, 1.0f,
 		0.0f, 2.8f, 0.0f,
-		1.0f, 0.0f, 0.0f, // DirecciÛn hacia adelante (+X)
+		1.0f, 0.0f, 0.0f, // Direcci√≥n hacia adelante (+X)
 		1.0f, 0.0005f, 0.00019f,
 		25.0f); // Apertura del faro
 	spotLightCount++;
@@ -826,7 +913,7 @@ int main(int argc, char** argv)
 	////Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
 	{
-		//luz direccional, sÛlo 1 y siempre debe de existir
+		//luz direccional, s√≥lo 1 y siempre debe de existir
 		if (escenarioActual == 1)
 		{
 			// Espacio
@@ -872,7 +959,7 @@ int main(int argc, char** argv)
 		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
 
 
-		// DetecciÛn de teclas para cambiar de escenario y reubicar la c·mara
+		// Detecci√≥n de teclas para cambiar de escenario y reubicar la c√°mara
 		if (mainWindow.getsKeys()[GLFW_KEY_1] && escenarioActual != 1) {
 			escenarioActual = 1;
 			camera = Camera(glm::vec3(0.0f, 0.0f, 375.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 2.5f, 0.5f);
@@ -884,17 +971,17 @@ int main(int argc, char** argv)
 		}
 		if (mainWindow.getsKeys()[GLFW_KEY_3] && escenarioActual != 3) {
 			escenarioActual = 3;
-			// Yaw -90 mira hacia -Z, donde est· el estrado del debate
+			// Yaw -90 mira hacia -Z, donde est√° el estrado del debate
 			camera = Camera(glm::vec3(0.0f, 5.0f, 50.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 1.5f, 0.5f);
 			glfwSetWindowTitle(glfwGetCurrentContext(), TITULO_VENTANA);
 		}
 
-		// C·mara libre
+		// C√°mara libre
 		if (mainWindow.getsKeys()[GLFW_KEY_4]) {
 			camaraLigadaAvatar = false;
 		}
 
-		// C·mara siguiendo al avatar
+		// C√°mara siguiendo al avatar
 		if (mainWindow.getsKeys()[GLFW_KEY_5]) {
 			camaraLigadaAvatar = true;
 		}
@@ -908,7 +995,7 @@ int main(int argc, char** argv)
 		}
 
 
-		// Avatar en los escenarios 2 (Valle) y 3 (Erid): WASD lo mueve y la c·mara lo sigue en tercera persona
+		// Avatar en los escenarios 2 (Valle) y 3 (Erid): WASD lo mueve y la c√°mara lo sigue en tercera persona
 		static int escenarioAvatar = 0;
 		if (escenarioActual == 2 || escenarioActual == 3) {
 			if (escenarioAvatar != escenarioActual) {
@@ -926,7 +1013,7 @@ int main(int argc, char** argv)
 				Avatar::seguirConCamara(camera);
 			}
 
-			// SÛlo sigue al avatar si el modo est· activado
+			// S√≥lo sigue al avatar si el modo est√° activado
 			if (camaraLigadaAvatar) {
 				Avatar::seguirConCamara(camera);
 			}
@@ -942,8 +1029,7 @@ int main(int argc, char** argv)
 				(float)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1200.0f);
 			ValleHelado::dibujar(camera, proyeccionValle, segundosValle);
 
-
-			// Avatar dibujado con el shader del valle (view y projection ya quedaron puestos en dibujar)
+			// Avatar con shader del valle
 			{
 				GLint prog = ValleHelado::programa;
 				glUseProgram(prog);
@@ -951,6 +1037,84 @@ int main(int argc, char** argv)
 				Avatar::dibujar(glGetUniformLocation(prog, "model"), glGetUniformLocation(prog, "tinte"));
 				glUseProgram(0);
 			}
+
+			// ===== PLATAFORMA HEXTECH (con shader de iluminaci√≥n principal) =====
+			shaderList[0].UseShader();
+
+			GLuint uModel = shaderList[0].GetModelLocation();
+			GLuint uProjection = shaderList[0].GetProjectionLocation();
+			GLuint uView = shaderList[0].GetViewLocation();
+			GLuint uEyePos = shaderList[0].GetEyePositionLocation();
+			GLuint uColor = shaderList[0].getColorLocation();
+			GLuint uSpecular = shaderList[0].GetSpecularIntensityLocation();
+			GLuint uShininess = shaderList[0].GetShininessLocation();
+
+			glUniformMatrix4fv(uProjection, 1, GL_FALSE, glm::value_ptr(proyeccionValle));
+			glUniformMatrix4fv(uView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
+			glUniform3f(uEyePos,
+				camera.getCameraPosition().x,
+				camera.getCameraPosition().y,
+				camera.getCameraPosition().z);
+
+			shaderList[0].SetDirectionalLight(&mainLight);
+			PointLight lucesHextech[1];
+			lucesHextech[0] = pointLights[indicePuntualHextech];
+			shaderList[0].SetPointLights(lucesHextech, 1);
+			shaderList[0].SetSpotLights(spotLights, 0);
+
+			// Animaciones de la plataforma
+			anguloCirculoHex += 2.0f * deltaTime;
+			anguloSemiAro += 1.0f * deltaTime;
+			float flotacionEsfera = sin((float)glfwGetTime() * 0.5f) * 0.2f;
+
+			glm::vec3 color = glm::vec3(1.0f);
+
+			// 1. Base (PADRE)
+			glm::mat4 modelBase = glm::translate(glm::mat4(1.0f), glm::vec3(10.5f, 0.0f, -30.0f));
+			modelBase = glm::rotate(modelBase, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			modelBase = glm::scale(modelBase, glm::vec3(10.0f));
+			glUniform3fv(uColor, 1, glm::value_ptr(color));
+			glUniformMatrix4fv(uModel, 1, GL_FALSE, glm::value_ptr(modelBase));
+			BasePlataforma_M.RenderModel();
+
+			// 2. N√∫cleo
+			glm::mat4 modelNucleo = glm::translate(modelBase, glm::vec3(0.0f, 0.41f, 0.0f));
+			modelNucleo = glm::rotate(modelNucleo, glm::radians(anguloCirculoHex), glm::vec3(0.0f, 1.0f, 0.0f));
+			glUniformMatrix4fv(uModel, 1, GL_FALSE, glm::value_ptr(modelNucleo));
+			NucleoPlataforma_M.RenderModel();
+
+			// 3. C√≠rculo Hextech
+			glm::mat4 modelCirculo = glm::translate(modelBase, glm::vec3(0.0f, 0.85f, -0.41f));
+			modelCirculo = glm::rotate(modelCirculo, glm::radians(anguloCirculoHex), glm::vec3(0.0f, 1.0f, 0.0f));
+			glUniformMatrix4fv(uModel, 1, GL_FALSE, glm::value_ptr(modelCirculo));
+			CirculoHex_M.RenderModel();
+
+			// 4. Andamio Izq
+			glUniformMatrix4fv(uModel, 1, GL_FALSE, glm::value_ptr(modelBase));
+			AndamioIzqPlataforma_M.RenderModel();
+
+			// 5. Andamio Der
+			glm::mat4 modelAndamioDer = glm::translate(modelBase, glm::vec3(-2.5f, 0.85f, 0.45f));
+			glUniformMatrix4fv(uModel, 1, GL_FALSE, glm::value_ptr(modelAndamioDer));
+			AndamioDerPlataforma_M.RenderModel();
+
+			// 6. Torre
+			glm::mat4 modelTorre = glm::translate(modelBase, glm::vec3(0.0f, 3.15f, 0.95f));
+			glUniformMatrix4fv(uModel, 1, GL_FALSE, glm::value_ptr(modelTorre));
+			TorrePlataforma_M.RenderModel();
+
+			// 7. Esfera flotante
+			glm::mat4 modelEsfera = glm::translate(modelTorre, glm::vec3(0.0f, 3.3f + flotacionEsfera, 0.0f));
+			glUniformMatrix4fv(uModel, 1, GL_FALSE, glm::value_ptr(modelEsfera));
+			EsferaPlataforma_M.RenderModel();
+
+			// 8. Semi aro
+			glm::mat4 modelSemiAro = glm::rotate(modelEsfera, glm::radians(anguloSemiAro), glm::vec3(0.0f, 1.0f, 1.0f));
+			glUniformMatrix4fv(uModel, 1, GL_FALSE, glm::value_ptr(modelSemiAro));
+			SemiaroPlataforma_M.RenderModel();
+
+			glUseProgram(0);
+
 			if (verificarValle) {
 				if (framePrueba == 0 || framePrueba == 120 || framePrueba == 240) ValleHelado::captura(framePrueba);
 				GLenum error = glGetError();
@@ -964,6 +1128,7 @@ int main(int argc, char** argv)
 			mainWindow.swapBuffers();
 			continue;
 		}
+
 		ValleHelado::estabaActivo = false;
 
 
@@ -981,7 +1146,7 @@ int main(int argc, char** argv)
 		}
 
 
-		// ConfiguraciÛn de los Shaders de IluminaciÛn 
+		// Configuraci√≥n de los Shaders de Iluminaci√≥n 
 		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
 		uniformProjection = shaderList[0].GetProjectionLocation();
@@ -990,7 +1155,7 @@ int main(int argc, char** argv)
 		uniformColor = shaderList[0].getColorLocation();
 
 
-		//informaciÛn en el shader de intensidad especular y brillo
+		//informaci√≥n en el shader de intensidad especular y brillo
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
 
@@ -1000,7 +1165,7 @@ int main(int argc, char** argv)
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
 
-		// luz ligada a la c·mara de tipo flash
+		// luz ligada a la c√°mara de tipo flash
 		glm::vec3 lowerLight = camera.getCameraPosition();
 		lowerLight.y -= 0.3f;
 		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
@@ -1009,7 +1174,7 @@ int main(int argc, char** argv)
 		if (escenarioActual == 1)
 		{
 			shaderList[0].SetDirectionalLight(&mainLight);
-			shaderList[0].SetPointLights(pointLights, 1); // sÛlo el Sol
+			shaderList[0].SetPointLights(pointLights, 1); // s√≥lo el Sol
 			shaderList[0].SetSpotLights(spotLights, 0);
 		}
 
@@ -1028,28 +1193,28 @@ int main(int argc, char** argv)
 
 		glm::mat4 model(1.0);
 		glm::mat4 modelaux(1.0);
-		glm::mat4 modelaux2(1.0); // para la jerarquÌa del satelite
-		glm::mat4 modelaux3(1.0); // para la jerarquÌa del satelite
+		glm::mat4 modelaux2(1.0); // para la jerarqu√≠a del satelite
+		glm::mat4 modelaux3(1.0); // para la jerarqu√≠a del satelite
 		glm::mat4 modelaux4(1.0);
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 
 
-		// Dibujado de objetos seg˙n el escenario
+		// Dibujado de objetos seg√∫n el escenario
 		if (escenarioActual == 1) {
 
 
-			// AnimaciÛn b·sica de los planetas
+			// Animaci√≥n b√°sica de los planetas
 			rotaPlanetas += rotaPlanetasOffset * deltaTime;
 			if (rotaPlanetas >= 360.0f * toRadians) {
 				rotaPlanetas = 0.0f;
 			}
 
 
-			// AnimaciÛn b·sica de los anillos de asteroides
+			// Animaci√≥n b√°sica de los anillos de asteroides
 			rotaAnillo += rotaAnilloOffset * deltaTime;
 
 
-			// AnimaciÛn de la luna orbitando alrededor del planeta 1
+			// Animaci√≥n de la luna orbitando alrededor del planeta 1
 			rotaLuna += rotaLunaOffset * deltaTime;
 
 
@@ -1058,7 +1223,7 @@ int main(int argc, char** argv)
 			}
 
 
-			// AnimaciÛn del satÈlite
+			// Animaci√≥n del sat√©lite
 			rotaAntena += rotaAntenaOffset * deltaTime;
 			rotaPanelIzq += rotaPanelIzqOffset * deltaTime;
 			rotaPanelDer += rotaPanelDerOffset * deltaTime;
@@ -1101,7 +1266,7 @@ int main(int argc, char** argv)
 			luna.RenderModel();
 
 
-			// SatÈlite
+			// Sat√©lite
 			// Cuerpo del satelite
 			model = modelaux2;
 			color = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -1162,7 +1327,7 @@ int main(int argc, char** argv)
 			planeta2.RenderModel();
 
 
-			// CinturÛn de asteroides 1
+			// Cintur√≥n de asteroides 1
 			model = glm::mat4(1.0);
 			color = glm::vec3(1.0f, 1.0f, 1.0f);
 			model = glm::translate(model, glm::vec3(-250.0f, 0.0f, 175.0f));
@@ -1174,7 +1339,7 @@ int main(int argc, char** argv)
 			anilloAst.RenderModel();
 
 
-			// CinturÛn de asteroides 2
+			// Cintur√≥n de asteroides 2
 			model = glm::mat4(1.0);
 			color = glm::vec3(1.0f, 1.0f, 1.0f);
 			model = glm::translate(model, glm::vec3(-250.0f, 0.0f, 175.0f));
@@ -1197,14 +1362,70 @@ int main(int argc, char** argv)
 			glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 			asteroides.RenderModel();
 
+			//ESTACION 
+
+			// 1. Cabina
+			glm::mat4 modelEstacionCabina = glm::mat4(1.0);
+			modelEstacionCabina = glm::translate(modelEstacionCabina, glm::vec3(220.0f, 40.0f, 150.0f));
+			modelEstacionCabina = glm::rotate(modelEstacionCabina, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			modelEstacionCabina = glm::scale(modelEstacionCabina, glm::vec3(1.0f, 1.0f, 1.0f));
+
+			color = glm::vec3(1.0f, 1.0f, 1.0f);
+			glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelEstacionCabina));
+			EstacionCabina_M.RenderModel();
+
+			// 2. Puerta izq
+			glm::mat4 modelEstacionPuertaIzq = modelEstacionCabina;
+			modelEstacionPuertaIzq = glm::translate(modelEstacionPuertaIzq, glm::vec3(-2.6f, 0.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelEstacionPuertaIzq));
+			EstacionPuertaIzq_M.RenderModel();
+
+			// 3. Puerta der
+			glm::mat4 modelEstacionPuertaDer = modelEstacionCabina;
+			modelEstacionPuertaDer = glm::translate(modelEstacionPuertaDer, glm::vec3(-2.6f, 0.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelEstacionPuertaDer));
+			EstacionPuertaDer_M.RenderModel();
+
+
+			// 4. Estructura
+			glm::mat4 modelEstacionEstructura = modelEstacionCabina;
+			modelEstacionEstructura = glm::translate(modelEstacionEstructura, glm::vec3(0.0f, 0.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelEstacionEstructura));
+			EstacionEstructura_M.RenderModel();
+
+			//  5. EstacionPanelDerecho
+			glm::mat4 modelEstacionPanelDerecho = modelEstacionEstructura;
+			modelEstacionPanelDerecho = glm::translate(modelEstacionPanelDerecho, glm::vec3(0.0f, 0.0f, 8.5f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelEstacionPanelDerecho));
+			EstacionPanelDerecho_M.RenderModel();
+
+			//  6. EstacionPanelIzquierdo
+			glm::mat4 modelEstacionPanelIzquierdo = modelEstacionEstructura;
+			modelEstacionPanelIzquierdo = glm::translate(modelEstacionPanelIzquierdo, glm::vec3(0.0f, 0.0f, -8.5f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelEstacionPanelIzquierdo));
+			EstacionPanelIzquierdo_M.RenderModel();
+
+			// 7. EstacionCapsulaDer
+			glm::mat4 modelEstacionCapsulasDer = modelEstacionEstructura;
+			modelEstacionCapsulasDer = glm::translate(modelEstacionCapsulasDer, glm::vec3(0.0f, 0.0f, 5.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelEstacionCapsulasDer));
+			EstacionCapsulasDer_M.RenderModel();
+
+			// 8. EstacionCapsulaIzq
+			glm::mat4 modelEstacionCapsulasIzq = modelEstacionEstructura;
+			modelEstacionCapsulasIzq = glm::translate(modelEstacionCapsulasIzq, glm::vec3(0.0f, 0.0f, -5.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelEstacionCapsulasIzq));
+			EstacionCapsulasIzq_M.RenderModel();
+
+
 
 		}
-
 
 		else if (escenarioActual == 3) {
 
 
-			// AnimaciÛn de Rocky saludando
+			// Animaci√≥n de Rocky saludando
 			if (saludo)
 			{
 				rotBrazoRocky += rotBrazoRockyOffset;
@@ -1269,7 +1490,7 @@ int main(int argc, char** argv)
 			// Matriz para las luces de la nave
 			glm::mat4 naveMatrixLuces = glm::rotate(modelVehiculo, 360.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 
-			// PosiciÛn y direcciÛn de la luz spotlight frontal de la nave
+			// Posici√≥n y direcci√≥n de la luz spotlight frontal de la nave
 			glm::vec3 naveSpotPos = glm::vec3(naveMatrixLuces * glm::vec4(0.0f, 0.0f, 5.0f, 1.0f));
 			glm::vec3 naveSpotDir = glm::normalize(glm::vec3(naveMatrixLuces * glm::vec4(0.0f, -0.4f, 1.0f, 0.0f)));
 
@@ -1286,7 +1507,7 @@ int main(int argc, char** argv)
 
 			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelVehiculo));
 
-			// El color general lo toma de la configuraciÛn del corredor
+			// El color general lo toma de la configuraci√≥n del corredor
 			//glUniform3fv(uniformColor, 1, glm::value_ptr(corredores[0].tint));
 			color = glm::vec3(1.0f, 1.0f, 1.0f);
 			glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -1323,7 +1544,7 @@ int main(int argc, char** argv)
 				plainTexture, Material_opaco);
 
 
-			// Avatar (opaco: va antes del rayo transl˙cido)
+			// Avatar (opaco: va antes del rayo transl√∫cido)
 			Avatar::dibujar(uniformModel, uniformColor);
 
 
