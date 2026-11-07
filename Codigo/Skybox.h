@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "CommonValues.h"
 #include <vector>
@@ -15,7 +15,9 @@ class Skybox
 public:
 	Skybox();
 	Skybox(std::vector<std::string> faceLocations);
-	void DrawSkybox(glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
+	void DrawSkybox(glm::mat4 viewMatrix, glm::mat4 projectionMatrix, bool cicloActivo = false,
+        glm::vec3 tinteCielo = glm::vec3(1.0f),
+        glm::vec3 haciaSol = glm::vec3(0,1,0), float crepusculo = 0.0f);
 		
 	~Skybox();
 private:

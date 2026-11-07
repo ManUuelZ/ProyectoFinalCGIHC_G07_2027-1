@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include<stdio.h>
 #include<glew.h>
 #include<glfw3.h>
@@ -8,7 +8,7 @@ class Window
 public:
 	Window();
 	Window(GLint windowWidth, GLint windowHeight);
-	int Initialise();
+	int Initialise(bool visible = true);
 	GLfloat getBufferWidth() { return bufferWidth; }
 	GLfloat getBufferHeight() { return bufferHeight; }
 	GLfloat getXChange();
@@ -16,6 +16,7 @@ public:
 	GLfloat getmuevex() { return muevex; }
 	GLfloat getmuevexAv1() { return muevexAv1; }
 	GLfloat getmuevexAv2() { return muevexAv2; }
+	bool getLinternaEncendida() const { return linternaEncendida; }
 	bool getShouldClose() {
 		return  glfwWindowShouldClose(mainWindow);}
 	bool* getsKeys() { return keys; }
@@ -23,19 +24,20 @@ public:
 	
 	~Window();
 private: 
-	GLFWwindow *mainWindow;
+	GLFWwindow *mainWindow = nullptr;
 	GLint width, height;
 	bool keys[1024];
 	GLint bufferWidth, bufferHeight;
 	void createCallbacks();
 	GLfloat lastX;
 	GLfloat lastY;
-	GLfloat xChange;
-	GLfloat yChange;
-	GLfloat muevex;
-	GLfloat muevexAv1;
-	GLfloat muevexAv2;
-	bool mouseFirstMoved;
+	GLfloat xChange = 0.0f;
+	GLfloat yChange = 0.0f;
+	GLfloat muevex = 2.0f;
+	GLfloat muevexAv1 = 0.0f;
+	GLfloat muevexAv2 = 0.0f;
+	bool mouseFirstMoved = true;
+	bool linternaEncendida = false;
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);
 	static void ManejaMouse(GLFWwindow* window, double xPos, double yPos);
 

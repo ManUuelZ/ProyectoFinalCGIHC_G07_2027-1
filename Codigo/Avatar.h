@@ -246,8 +246,8 @@ namespace Avatar {
 		}
 		else {
 			// Erid: límites del escenario
-			pos.x = std::clamp(pos.x, -95.0f, 95.0f);
-			pos.z = std::clamp(pos.z, -205.0f, 95.0f);
+			pos.x = std::clamp(pos.x, -340.0f, 390.0f);
+			pos.z = std::clamp(pos.z, -205.0f, 520.0f);
 			// Sube las escaleras del estrado y no se hunde bajo el piso de Erid
 			pos.y = (std::max)(PISO_ERID, EscenarioDebate::ObtenerAlturaPiso(pos.x, pos.z));
 		}

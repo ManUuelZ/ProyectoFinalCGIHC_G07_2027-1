@@ -1,4 +1,4 @@
-#include "Skybox.h"
+ï»¿#include "Skybox.h"
 
 
 
@@ -19,16 +19,16 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 	for (size_t i = 0; i < 6; i++)
 	{
 
-		unsigned char *texData = stbi_load(faceLocations[i].c_str(), &width, &height, &bitDepth, 0); //el tipo unsigned char es para un array de bytes de la imagen, obtener datos de la imagen 
+		unsigned char *texData = stbi_load(faceLocations[i].c_str(), &width, &height, &bitDepth, STBI_rgb); //el tipo unsigned char es para un array de bytes de la imagen, obtener datos de la imagen 
 		if (!texData)
 		{
-			printf("No se encontró : %s", faceLocations[i].c_str());
+			printf("No se encontrÃ³ : %s", faceLocations[i].c_str());
 			return;
 		}
 		//para cambiar el origen a la esquina inferior izquierda como necesitamos
 		//stbi_set_flip_vertically_on_load(true);
 		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X +i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, texData); //SIN CANAL ALPHA A ENOS QUE QUERAMOS AGREGAR EFECTO DE PARALLAX
-		stbi_image_free(texData); //para liberar la información de la imagen
+		stbi_image_free(texData); //para liberar la informaciÃ³n de la imagen
 	}
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -73,12 +73,20 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 
 }
 
-void Skybox::DrawSkybox(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
+void Skybox::DrawSkybox(glm::mat4 viewMatrix, glm::mat4 projectionMatrix, bool cicloActivo,
+    glm::vec3 tinteCielo, glm::vec3 haciaSol, float crepusculo)
 {
 	viewMatrix = glm::mat4(glm::mat3(viewMatrix));
 
 	glDepthMask(false);
 	skyShader->UseShader();
+    GLint programa = 0; glGetIntegerv(GL_CURRENT_PROGRAM, &programa);
+    glUniform1i(glGetUniformLocation(programa,"cicloActivo"),cicloActivo);
+    if (cicloActivo) {
+        glUniform3fv(glGetUniformLocation(programa,"tinteCielo"),1,glm::value_ptr(tinteCielo));
+        glUniform3fv(glGetUniformLocation(programa,"haciaSol"),1,glm::value_ptr(haciaSol));
+        glUniform1f(glGetUniformLocation(programa,"crepusculo"),crepusculo);
+    }
 	glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 	glActiveTexture(GL_TEXTURE0);

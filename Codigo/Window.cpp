@@ -1,4 +1,4 @@
-#include "Window.h"
+ï»¿#include "Window.h"
 
 Window::Window()
 {
@@ -21,12 +21,12 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 		keys[i] = 0;
 	}
 }
-int Window::Initialise()
+int Window::Initialise(bool visible)
 {
-	//Inicialización de GLFW
+	//InicializaciÃ³n de GLFW
 	if (!glfwInit())
 	{
-		printf("Falló inicializar GLFW");
+		printf("FallÃ³ inicializar GLFW");
 		glfwTerminate();
 		return 1;
 	}
@@ -37,6 +37,7 @@ int Window::Initialise()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
+	glfwWindowHint(GLFW_VISIBLE, visible ? GLFW_TRUE : GLFW_FALSE);
 	//CREAR VENTANA
 	mainWindow = glfwCreateWindow(width, height, "Proyecto Final.", NULL, NULL);
 
@@ -46,7 +47,7 @@ int Window::Initialise()
 		glfwTerminate();
 		return 1;
 	}
-	//Obtener tamaño de Buffer
+	//Obtener tamaÃ±o de Buffer
 	glfwGetFramebufferSize(mainWindow, &bufferWidth, &bufferHeight);
 
 	//asignar el contexto
@@ -61,7 +62,7 @@ int Window::Initialise()
 
 	if (glewInit() != GLEW_OK)
 	{
-		printf("Falló inicialización de GLEW");
+		printf("FallÃ³ inicializaciÃ³n de GLEW");
 		glfwDestroyWindow(mainWindow);
 		glfwTerminate();
 		return 1;
@@ -72,7 +73,7 @@ int Window::Initialise()
 
 	//Asignar Viewport
 	glViewport(0, 0, bufferWidth, bufferHeight);
-	//Callback para detectar que se está usando la ventana
+	//Callback para detectar que se estÃ¡ usando la ventana
 	glfwSetWindowUserPointer(mainWindow, this);
 
 	return 0;
@@ -124,13 +125,10 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	{
 		theWindow->muevexAv1 -= 1.0;
 	}
-	if (key == GLFW_KEY_X)
+	// X se consulta en el main: solo cambia la farola cercana al avatar.
+	if (key == GLFW_KEY_Z && action == GLFW_PRESS)
 	{
-		theWindow->muevexAv2 += 1.0;
-	}
-	if (key == GLFW_KEY_Z)
-	{
-		theWindow->muevexAv2 -= 1.0;
+		theWindow->linternaEncendida = !theWindow->linternaEncendida;
 	}
 
 
