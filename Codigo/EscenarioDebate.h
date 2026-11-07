@@ -7,6 +7,7 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
+#include "CommonValues.h"   // MAX_SPOT_LIGHTS
 #include "Mesh_tn.h"
 #include "Texture.h"
 #include "Material.h"
@@ -15,19 +16,16 @@
 
 class EscenarioDebate {
 public:
-	// Escala aumentada al doble para proporción monumental
 	static constexpr float Y_BASE = -2.0f;
 	static constexpr float Z_INICIO_ESCALERAS = -120.0f;
-	static constexpr float ANCHO_ESCENARIO = 100.0f;  // Antes 50.0f
-	static constexpr float ALTO_ESCALON = 1.2f;       // Antes 0.6f
-	static constexpr float PROF_ESCALON = 3.0f;       // Antes 1.5f
+	static constexpr float ANCHO_ESCENARIO = 100.0f;
+	static constexpr float ALTO_ESCALON = 1.2f;
+	static constexpr float PROF_ESCALON = 3.0f;
 	static constexpr int NUM_ESCALONES = 8;
 
-	// Guarda el índice del SpotLight del rayo abductor para moverlo con la nave
-	static int& IndiceSpotRayo() {
-		static int idx = -1;
-		return idx;
-	}
+	static int& IndiceLuzIzq() { static int idx = -1; return idx; }
+	static int& IndiceLuzDer() { static int idx = -1; return idx; }
+	static int& IndiceSpotRayo() { static int idx = -1; return idx; }
 
 	static MeshModel* ObtenerCubo() {
 		static MeshModel* cubo = nullptr;
@@ -78,13 +76,13 @@ public:
 		return cubo;
 	}
 
-	// Genera una malla cónica truncada para el haz de luz verde del rayo abductor
+	// Cono truncado para el haz del rayo abductor
 	static MeshModel* ObtenerConoAbductor() {
 		static MeshModel* cono = nullptr;
 		if (!cono) {
 			const int SEG = 24;
-			const float rSup = 0.25f; // Radio arriba (bajo la nave)
-			const float rInf = 1.0f;  // Radio abajo (en el estrado)
+			const float rSup = 0.25f;
+			const float rInf = 1.0f;
 			std::vector<GLfloat> v;
 			std::vector<unsigned int> idx;
 
@@ -92,12 +90,10 @@ public:
 				float ang = (2.0f * 3.14159265f * i) / SEG;
 				float c = cos(ang), s = sin(ang);
 
-				// Vértice superior (Y = +0.5)
 				v.push_back(rSup * c); v.push_back(0.5f); v.push_back(rSup * s);
 				v.push_back((float)i / SEG); v.push_back(1.0f);
 				v.push_back(c); v.push_back(0.2f); v.push_back(s);
 
-				// Vértice inferior (Y = -0.5)
 				v.push_back(rInf * c); v.push_back(-0.5f); v.push_back(rInf * s);
 				v.push_back((float)i / SEG); v.push_back(0.0f);
 				v.push_back(c); v.push_back(0.2f); v.push_back(s);
@@ -113,7 +109,7 @@ public:
 		return cono;
 	}
 
-	// 1. Altura del piso escalada a las nuevas dimensiones
+	// Altura del piso (por si otro archivo, como Avatar.h, la consulta)
 	static float ObtenerAlturaPiso(float x, float z) {
 		if (x >= -50.0f && x <= 50.0f) {
 			float zFinEscaleras = Z_INICIO_ESCALERAS - (NUM_ESCALONES * PROF_ESCALON); // -144.0f
@@ -123,84 +119,166 @@ public:
 				return Y_BASE + (escalon * ALTO_ESCALON);
 			}
 			if (z <= zFinEscaleras && z >= -210.0f) {
-				return Y_BASE + (NUM_ESCALONES * ALTO_ESCALON); // Y_ESTRADO = 7.6f
+				return Y_BASE + (NUM_ESCALONES * ALTO_ESCALON);
 			}
 		}
 		return Y_BASE;
 	}
 
-	// 2. Registro de los 2 reflectores blancos + el SpotLight verde del Rayo Abductor
 	static void AgregarSpotLights(SpotLight* arregloSpotLights, unsigned int& spotLightCount) {
-		const float Y_ESTRADO = Y_BASE + (NUM_ESCALONES * ALTO_ESCALON); // 7.6f
+		const float Y_ESTRADO = Y_BASE + (NUM_ESCALONES * ALTO_ESCALON);
 
-		// Reflector Izquierdo (apunta a columnas izquierdas y podio de Kang)
 		if (spotLightCount < MAX_SPOT_LIGHTS) {
-			arregloSpotLights[spotLightCount] = SpotLight(
-				0.85f, 0.90f, 1.0f,
-				0.5f, 3.0f,
-				-18.0f, Y_ESTRADO + 0.5f, -146.0f,
-				0.0f, 0.65f, -0.75f,
-				1.0f, 0.004f, 0.0001f,
-				32.0f
-			);
-			spotLightCount++;
+			IndiceLuzIzq() = spotLightCount;
+			arregloSpotLights[spotLightCount++] = SpotLight(
+				0.85f, 0.90f, 1.0f, 0.5f, 3.0f,
+				-18.0f, Y_ESTRADO + 2.5f, -146.0f, 0.0f, 0.65f, -0.75f, 1.0f, 0.004f, 0.0001f, 32.0f);
 		}
-		// Reflector Derecho (apunta a columnas derechas y podio de Kodos)
 		if (spotLightCount < MAX_SPOT_LIGHTS) {
-			arregloSpotLights[spotLightCount] = SpotLight(
-				0.85f, 0.90f, 1.0f,
-				0.5f, 3.0f,
-				18.0f, Y_ESTRADO + 0.5f, -146.0f,
-				0.0f, 0.65f, -0.75f,
-				1.0f, 0.004f, 0.0001f,
-				32.0f
-			);
-			spotLightCount++;
+			IndiceLuzDer() = spotLightCount;
+			arregloSpotLights[spotLightCount++] = SpotLight(
+				0.85f, 0.90f, 1.0f, 0.5f, 3.0f,
+				18.0f, Y_ESTRADO + 2.5f, -146.0f, 0.0f, 0.65f, -0.75f, 1.0f, 0.004f, 0.0001f, 32.0f);
 		}
-		// SpotLight 3: RAYO ABDUCTOR VERDE (Apunta verticalmente hacia abajo desde la nave)
 		if (spotLightCount < MAX_SPOT_LIGHTS) {
-			IndiceSpotRayo() = (int)spotLightCount;
-			arregloSpotLights[spotLightCount] = SpotLight(
-				0.15f, 1.0f, 0.25f,             // Color verde alienígena intenso
-				1.0f, 4.5f,                     // Alta intensidad para bañar el centro del estrado
-				0.0f, Y_BASE + 78.0f, -158.0f,  // Posición inicial bajo la nave
-				0.0f, -1.0f, 0.0f,              // Dirección: totalmente hacia abajo (-Y)
-				1.0f, 0.002f, 0.00005f,         // Alcance largo hasta el piso del estrado
-				22.0f                           // Ángulo del cono abductor
-			);
-			spotLightCount++;
+			IndiceSpotRayo() = spotLightCount;
+			arregloSpotLights[spotLightCount++] = SpotLight(
+				0.0f, 0.0f, 0.0f, 1.0f, 4.5f,   // inicia apagado
+				0.0f, Y_BASE + 78.0f, -158.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.002f, 0.00005f, 22.0f);
 		}
 	}
 
-	// Actualiza la posición de la luz del rayo abductor en cada frame según la levitación
-	static void ActualizarLuzRayo(SpotLight* arregloSpotLights, float tiempoSegundos) {
-		int idx = IndiceSpotRayo();
-		if (idx >= 0) {
-			float offsetLevitacion = 3.5f * sin(tiempoSegundos * 2.2f);
-			glm::vec3 posLuzNave(0.0f, Y_BASE + 78.0f + offsetLevitacion, -158.0f);
-			arregloSpotLights[idx].SetFlash(posLuzNave, glm::vec3(0.0f, -1.0f, 0.0f));
+	// Tecla L: enciende/apaga los reflectores (rayoOn se conserva solo por compatibilidad con main)
+	static void ActualizarLucesDinamicas(SpotLight* arregloSpotLights, float tiempoSegundos, bool focosOn, bool rayoOn) {
+		glm::vec3 colorFocos = focosOn ? glm::vec3(0.85f, 0.90f, 1.0f) : glm::vec3(0.0f, 0.0f, 0.0f);
+		const float yFoco = (Y_BASE + (NUM_ESCALONES * ALTO_ESCALON)) + 2.5f;
+
+		if (IndiceLuzIzq() >= 0) {
+			arregloSpotLights[IndiceLuzIzq()] = SpotLight(
+				colorFocos.x, colorFocos.y, colorFocos.z, 0.5f, 3.0f,
+				-18.0f, yFoco, -146.0f, 0.0f, 0.65f, -0.75f, 1.0f, 0.004f, 0.0001f, 32.0f);
+		}
+		if (IndiceLuzDer() >= 0) {
+			arregloSpotLights[IndiceLuzDer()] = SpotLight(
+				colorFocos.x, colorFocos.y, colorFocos.z, 0.5f, 3.0f,
+				18.0f, yFoco, -146.0f, 0.0f, 0.65f, -0.75f, 1.0f, 0.004f, 0.0001f, 32.0f);
+		}
+
+		// Luz verde del rayo, sigue la levitación de la nave
+		if (IndiceSpotRayo() >= 0) {
+			glm::vec3 colorRayo = rayoOn ? glm::vec3(0.15f, 1.0f, 0.25f) : glm::vec3(0.0f, 0.0f, 0.0f);
+			float offset = 3.5f * sin(tiempoSegundos * 2.2f);
+			arregloSpotLights[IndiceSpotRayo()] = SpotLight(
+				colorRayo.x, colorRayo.y, colorRayo.z, 1.0f, 4.5f,
+				0.0f, Y_BASE + 78.0f + offset, -158.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.002f, 0.00005f, 22.0f);
 		}
 	}
 
-	// 3. Dibujado de la estructura al doble de tamaño
-	static void DibujarEscenario(
+	// Módulo de valla metálica centrado en (centroX, Y_BASE, centroZ)
+	static void DibujarModuloValla(
+		MeshModel* cuboMesh,
 		GLuint uniformModel,
-		GLuint uniformColor,
-		GLuint uniformSpecularIntensity,
-		GLuint uniformShininess,
+		float centroX,
+		float centroZ,
+		float rotacionYGrados,
+		float largo = 14.0f,
+		float alto = 4.2f
+	) {
+		glm::mat4 base(1.0f);
+		base = glm::translate(base, glm::vec3(centroX, Y_BASE, centroZ));
+		base = glm::rotate(base, glm::radians(rotacionYGrados), glm::vec3(0.0f, 1.0f, 0.0f));
+
+		glm::mat4 model(1.0f);
+		const float grosor = 0.22f;
+
+		// Travesaño superior
+		model = glm::translate(base, glm::vec3(0.0f, alto, 0.0f));
+		model = glm::scale(model, glm::vec3(largo, grosor, grosor));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cuboMesh->RenderMeshModel();
+
+		// Travesaño inferior
+		model = glm::translate(base, glm::vec3(0.0f, 0.7f, 0.0f));
+		model = glm::scale(model, glm::vec3(largo, grosor, grosor));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cuboMesh->RenderMeshModel();
+
+		// Postes laterales + patas de apoyo
+		float extX[2] = { -largo * 0.5f, largo * 0.5f };
+		for (int i = 0; i < 2; i++) {
+			model = glm::translate(base, glm::vec3(extX[i], alto * 0.5f, 0.0f));
+			model = glm::scale(model, glm::vec3(grosor * 1.3f, alto, grosor * 1.3f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			cuboMesh->RenderMeshModel();
+
+			model = glm::translate(base, glm::vec3(extX[i], 0.12f, 0.0f));
+			model = glm::scale(model, glm::vec3(0.5f, 0.24f, 2.2f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			cuboMesh->RenderMeshModel();
+		}
+
+		// Barrotes internos
+		const int numBarrotes = 7;
+		float paso = largo / (numBarrotes + 1);
+		float altoBarrote = alto - 0.7f;
+		for (int b = 1; b <= numBarrotes; b++) {
+			float xLocal = (-largo * 0.5f) + (b * paso);
+			model = glm::translate(base, glm::vec3(xLocal, 0.7f + (altoBarrote * 0.5f), 0.0f));
+			model = glm::scale(model, glm::vec3(grosor * 0.65f, altoBarrote, grosor * 0.65f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			cuboMesh->RenderMeshModel();
+		}
+	}
+
+	static void DibujarCarcasaFoco(
+		MeshModel* cuboMesh, GLuint uniformModel, GLuint uniformColor,
+		float x, float y, float z, float rotY
+	) {
+		glm::mat4 base(1.0f);
+		base = glm::translate(base, glm::vec3(x, y, z));
+		base = glm::rotate(base, glm::radians(rotY), glm::vec3(0.0f, 1.0f, 0.0f));
+
+		glm::vec3 colorNegro(0.1f, 0.1f, 0.1f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(colorNegro));
+
+		// Base
+		glm::mat4 model = glm::translate(base, glm::vec3(0.0f, 0.2f, 0.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 0.4f, 2.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cuboMesh->RenderMeshModel();
+
+		// Soporte vertical
+		model = glm::translate(base, glm::vec3(0.0f, 1.2f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.4f, 2.0f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cuboMesh->RenderMeshModel();
+
+		// Caja del reflector
+		model = glm::translate(base, glm::vec3(0.0f, 2.5f, 0.0f));
+		model = glm::rotate(model, glm::radians(45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(2.5f, 1.5f, 2.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cuboMesh->RenderMeshModel();
+	}
+
+	// Estructura del escenario: escalinata, explanada, pilares, pared, vallas y carcasas
+	static void DibujarEscenario(
+		GLuint uniformModel, GLuint uniformColor,
+		GLuint uniformSpecularIntensity, GLuint uniformShininess,
 		Texture& texBlancaBase,
+		Texture& texEscalones,
 		Material& matOpaco
 	) {
 		MeshModel* cuboMesh = ObtenerCubo();
 		glm::mat4 model(1.0f);
 		matOpaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		texBlancaBase.UseTexture();
-
-		const float Y_ESTRADO = Y_BASE + (NUM_ESCALONES * ALTO_ESCALON); // 7.6f
-
-		// A. Escalinata monumental de 8 peldaños (Ancho = 100, Alto = 9.6 total, Prof = 24 total)
-		glm::vec3 colorPiedra(0.68f, 0.68f, 0.72f);
+		texEscalones.UseTexture();
+		glm::vec3 colorPiedra(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(colorPiedra));
+		const float Y_ESTRADO = Y_BASE + (NUM_ESCALONES * ALTO_ESCALON);
+
+		// A. Escalinata
+
 		for (int i = 0; i < NUM_ESCALONES; i++) {
 			float yPos = Y_BASE + (i * ALTO_ESCALON) + (ALTO_ESCALON * 0.5f);
 			float zPos = Z_INICIO_ESCALERAS - (i * PROF_ESCALON) - (PROF_ESCALON * 0.5f);
@@ -212,26 +290,27 @@ public:
 			cuboMesh->RenderMeshModel();
 		}
 
-		// B. Explanada superior (Desde Z = -144 hasta Z = -210)
+		// B. Explanada superior
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, Y_BASE + 4.8f, -177.0f));
 		model = glm::scale(model, glm::vec3(ANCHO_ESCENARIO, 9.6f, 66.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		cuboMesh->RenderMeshModel();
+		texBlancaBase.UseTexture();
 
-		// C. 6 Pilares gigantes (Altura de 36 unidades) + Cornisa
+		// C. Pilares
 		glm::vec3 colorMarmol(0.96f, 0.95f, 0.88f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(colorMarmol));
 		float posX[6] = { -40.0f, -24.0f, -8.0f, 8.0f, 24.0f, 40.0f };
 		for (int i = 0; i < 6; i++) {
-			// Base del pilar
+			// Base
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(posX[i], Y_ESTRADO + 2.4f, -168.0f));
 			model = glm::scale(model, glm::vec3(6.4f, 4.8f, 6.4f));
 			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 			cuboMesh->RenderMeshModel();
 
-			// Fuste (Columna de 36 unidades de alto)
+			// Fuste
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(posX[i], Y_ESTRADO + 22.8f, -168.0f));
 			model = glm::scale(model, glm::vec3(4.4f, 36.0f, 4.4f));
@@ -246,14 +325,14 @@ public:
 			cuboMesh->RenderMeshModel();
 		}
 
-		// D. Cornisa superior
+		// D. Cornisa
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, Y_ESTRADO + 46.0f, -168.0f));
 		model = glm::scale(model, glm::vec3(ANCHO_ESCENARIO, 5.6f, 10.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		cuboMesh->RenderMeshModel();
 
-		// E. Pared de fondo Azul Lavanda (100 de ancho x 48 de alto)
+		// E. Pared de fondo
 		glm::vec3 colorAzulDebate(0.54f, 0.51f, 0.78f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(colorAzulDebate));
 		model = glm::mat4(1.0f);
@@ -262,11 +341,31 @@ public:
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		cuboMesh->RenderMeshModel();
 
+		// F. Vallas
+		glm::vec3 colorAcero(0.56f, 0.59f, 0.64f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(colorAcero));
+
+		DibujarModuloValla(cuboMesh, uniformModel, -42.0f, -102.0f, 0.0f);
+		DibujarModuloValla(cuboMesh, uniformModel, -26.0f, -102.0f, 0.0f);
+		DibujarModuloValla(cuboMesh, uniformModel, -52.0f, -110.0f, 35.0f);
+
+		DibujarModuloValla(cuboMesh, uniformModel, 26.0f, -102.0f, 0.0f);
+		DibujarModuloValla(cuboMesh, uniformModel, 42.0f, -102.0f, 0.0f);
+		DibujarModuloValla(cuboMesh, uniformModel, 52.0f, -110.0f, -35.0f);
+
+		DibujarModuloValla(cuboMesh, uniformModel, -56.0f, -124.0f, 90.0f);
+		DibujarModuloValla(cuboMesh, uniformModel, 56.0f, -124.0f, 90.0f);
+
+		// Carcasas de los reflectores
+		DibujarCarcasaFoco(cuboMesh, uniformModel, uniformColor, -18.0f, Y_ESTRADO, -146.0f, -25.0f);
+		DibujarCarcasaFoco(cuboMesh, uniformModel, uniformColor, 18.0f, Y_ESTRADO, -146.0f, 25.0f);
+
+		// Deja el color en blanco para lo que se dibuje después
 		glm::vec3 blanco(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(blanco));
 	}
 
-	// 4. Dibujado de Podios, Kang, Kodos, Nave Gigante y Haz del Rayo Abductor
+	// Podios, Kang, Kodos, nave nodriza y Homero (sin rayo abductor)
 	static void DibujarModelosDebate(
 		GLuint uniformModel,
 		GLuint uniformColor,
@@ -276,84 +375,113 @@ public:
 		Model& kangModel,
 		Model& kodosModel,
 		Model& naveModel,
+		Model& homeroModel,
 		Texture& texBlancaBase,
 		Material& matBrillante,
-		float tiempoSegundos
+		float tiempoSegundos,
+		bool rayoOn, float alturaAbduccion, float giroAbduccion
 	) {
+		// Estado limpio por seguridad
+		glDepthMask(GL_TRUE);
+		glDisable(GL_BLEND);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
 		glm::mat4 model(1.0f);
 		glm::vec3 blanco(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(blanco));
 
-		const float Y_ESTRADO = Y_BASE + (NUM_ESCALONES * ALTO_ESCALON); // 7.6f
+		const float Y_ESTRADO = Y_BASE + (NUM_ESCALONES * ALTO_ESCALON);
 
-		// --- A. PODIO IZQUIERDO (KANG) - Escala aumentada ---
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-16.0f, Y_ESTRADO, -152.0f));
-		model = glm::scale(model, glm::vec3(3.5f, 3.5f, 3.5f));
+		// Podio izquierdo
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-16.0f, Y_ESTRADO, -152.0f));
+		model = glm::scale(model, glm::vec3(3.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		podioModel.RenderModel();
 
-		// --- B. PODIO DERECHO (KODOS) ---
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(16.0f, Y_ESTRADO, -152.0f));
-		model = glm::scale(model, glm::vec3(3.5f, 3.5f, 3.5f));
+		// Podio derecho
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(16.0f, Y_ESTRADO, -152.0f));
+		model = glm::scale(model, glm::vec3(3.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		podioModel.RenderModel();
 
-		// --- C. ALIEN 1: KANG ---
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		// (Opcional, pero recomendado para cristales) Evita que el cristal oculte lo que hay dentro de sí mismo
+		glDepthMask(GL_FALSE);
+
+		// Kang
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-16.0f, Y_ESTRADO, -156.5f));
-		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-16.0f, Y_ESTRADO, -156.5f));
+		model = glm::scale(model, glm::vec3(4.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		kangModel.RenderModel();
 
-		// --- D. ALIEN 2: KODOS ---
+		// Kodos
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(16.0f, Y_ESTRADO, -156.5f));
-		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(16.0f, Y_ESTRADO, -156.5f));
+		model = glm::scale(model, glm::vec3(4.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		kodosModel.RenderModel();
+		glDepthMask(GL_TRUE);
+		glDisable(GL_BLEND);
+		// Nave nodriza levitando
+		const float offsetLevitacion = 3.5f * sin(tiempoSegundos * 2.2f);
+		const float giroNave = tiempoSegundos * 35.0f * 0.01745329f;
+		const float yNaveActual = Y_BASE + 80.0f + offsetLevitacion;
 
-		// --- E. NAVE NODRIZA LEVITANDO ---
-		float offsetLevitacion = 3.5f * sin(tiempoSegundos * 2.2f);
-		float giroNave = tiempoSegundos * 35.0f * 0.01745329f;
-		float yNaveActual = Y_BASE + 80.0f + offsetLevitacion;
-
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, yNaveActual, -158.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, yNaveActual, -158.0f));
 		model = glm::rotate(model, giroNave, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::rotate(model, 0.08f * sin(tiempoSegundos * 1.5f), glm::vec3(0.0f, 0.0f, 1.0f));
-		model = glm::scale(model, glm::vec3(7.5f, 7.5f, 7.5f)); // Escala gigante
+		model = glm::scale(model, glm::vec3(7.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		naveModel.RenderModel();
 
-		// --- F. CONO VOLUMÉTRICO DEL RAYO ABDUCTOR (Semitransparente) ---
-		// Se extiende desde la base de la nave (yNaveActual - 2.0f) hasta el piso del estrado (Y_ESTRADO)
-		float alturaRayo = (yNaveActual - 2.0f) - Y_ESTRADO;
-		float yCentroRayo = Y_ESTRADO + (alturaRayo * 0.5f);
-		float pulsoRadio = 14.0f + 1.5f * sin(tiempoSegundos * 6.0f); // Efecto pulsante
+		// --- Homero: sube poco a poco dentro del rayo ---
+// Tope: base de la nave, para que no la atraviese
+		const float alturaMax = (yNaveActual - 2.0f) - Y_ESTRADO - 3.0f;
+		const float alturaHomero = (alturaAbduccion < alturaMax) ? alturaAbduccion : alturaMax;
 
-		glEnable(GL_BLEND);
-		// Blending aditivo para que el rayo brille como energía láser verde
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-		glDepthMask(GL_FALSE);
-
-		texBlancaBase.UseTexture();
-		matBrillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		glm::vec3 colorRayoVerde(0.15f, 0.95f, 0.30f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(colorRayoVerde));
-
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, yCentroRayo, -158.0f));
-		model = glm::rotate(model, -giroNave * 1.5f, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(pulsoRadio, alturaRayo, pulsoRadio));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		ObtenerConoAbductor()->RenderMeshModel();
-
-		// Restaurar estado de OpenGL
-		glDepthMask(GL_TRUE);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glDisable(GL_BLEND);
+		glm::mat4 modelAbducido = glm::translate(glm::mat4(1.0f),
+			glm::vec3(0.0f, Y_ESTRADO + alturaHomero, -158.0f));
+		if (rayoOn && alturaHomero > 0.1f) {
+			// Gira e inclina un poco mientras flota
+			modelAbducido = glm::rotate(modelAbducido, giroAbduccion, glm::vec3(0.0f, 1.0f, 0.0f));
+			modelAbducido = glm::rotate(modelAbducido, glm::radians(10.0f) * sin(tiempoSegundos * 3.0f),
+				glm::vec3(1.0f, 0.0f, 1.0f));
+		}
+		modelAbducido = glm::scale(modelAbducido, glm::vec3(1.8f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelAbducido));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(blanco));
+		homeroModel.RenderModel();
+
+		// --- Cono del rayo: translúcido, al final y solo si está encendido ---
+		if (rayoOn) {
+			const float alturaRayo = (yNaveActual - 2.0f) - Y_ESTRADO;
+			const float yCentroRayo = Y_ESTRADO + (alturaRayo * 0.5f);
+			const float pulsoRadio = 14.0f + 1.5f * sin(tiempoSegundos * 6.0f);
+
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+			glDepthMask(GL_FALSE);
+
+			texBlancaBase.UseTexture();
+			matBrillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+			glm::vec3 colorRayoVerde(0.15f, 0.95f, 0.30f);
+			glUniform3fv(uniformColor, 1, glm::value_ptr(colorRayoVerde));
+
+			glm::mat4 modelRayo = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, yCentroRayo, -158.0f));
+			modelRayo = glm::rotate(modelRayo, -giroNave * 1.5f, glm::vec3(0.0f, 1.0f, 0.0f));
+			modelRayo = glm::scale(modelRayo, glm::vec3(pulsoRadio, alturaRayo, pulsoRadio));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelRayo));
+			ObtenerConoAbductor()->RenderMeshModel();
+
+			// Restaurar estado
+			glDepthMask(GL_TRUE);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glDisable(GL_BLEND);
+			glUniform3fv(uniformColor, 1, glm::value_ptr(blanco));
+		}
 	}
 };
