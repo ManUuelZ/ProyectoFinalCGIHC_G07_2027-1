@@ -27,3 +27,4 @@ protected:
 	GLfloat constant, linear, exponent;
 };
 
+

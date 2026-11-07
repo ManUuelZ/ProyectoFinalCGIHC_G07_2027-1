@@ -9,7 +9,7 @@ Texture::Texture()
 	bitDepth = 0;
 	fileLocation = 0;
 }
-Texture::Texture(const char *FileLoc)
+Texture::Texture(const char* FileLoc)
 {
 	textureID = 0;
 	width = 0;
@@ -22,7 +22,7 @@ bool Texture::LoadTextureA()
 {
 	//para cambiar el origen a la esquina inferior izquierda como necesitamos
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char *texData = stbi_load(fileLocation, &width, &height, &bitDepth,STBI_rgb_alpha); //el tipo unsigned char es para un array de bytes de la imagen, obtener datos de la imagen 
+	unsigned char* texData = stbi_load(fileLocation, &width, &height, &bitDepth, STBI_rgb_alpha); //el tipo unsigned char es para un array de bytes de la imagen, obtener datos de la imagen 
 	if (!texData)
 	{
 		printf("No se encontró el archivo: %s", fileLocation);
@@ -30,13 +30,13 @@ bool Texture::LoadTextureA()
 	}
 	glGenTextures(1, &textureID); //parecido al VAO: crear una textura y asignarle un índice
 	glBindTexture(GL_TEXTURE_2D, textureID);//se indica que la textura es de tipo 2D, para superficies planas es suficiente esta textura
-	
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);// eje S paralelo a X, repetir sobre el eje
-/*	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);// eje S paralelo a X, repetir sobre el eje pero rotando con forme a un centro
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);// eje S paralelo a X, envolver toda la superficie
-*/
+	/*	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);// eje S paralelo a X, repetir sobre el eje pero rotando con forme a un centro
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);// eje S paralelo a X, envolver toda la superficie
+	*/
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);// eje T paralelo a Y, repetir sobre el eje
-	/*GL_TEXTURE_MIN_FILTER: Para más cerca o textura se escala a menor tamaño. GL_TEXTURE_MAG_FILTER: Para más lejos o textura se escala a mayor tamaño. 
+	/*GL_TEXTURE_MIN_FILTER: Para más cerca o textura se escala a menor tamaño. GL_TEXTURE_MAG_FILTER: Para más lejos o textura se escala a mayor tamaño.
 	GL_LINEAR  aplica sampling y blending de texels más cercanos. GL_NEAREST aplica sample de texel más cercano
 	*/
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -52,7 +52,7 @@ bool Texture::LoadTexture()
 {
 	//para cambiar el origen a la esquina inferior izquierda como necesitamos
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char *texData = stbi_load(fileLocation, &width, &height, &bitDepth, STBI_rgb); //el tipo unsigned char es para un array de bytes de la imagen, obtener datos de la imagen 
+	unsigned char* texData = stbi_load(fileLocation, &width, &height, &bitDepth, STBI_rgb); //el tipo unsigned char es para un array de bytes de la imagen, obtener datos de la imagen 
 	if (!texData)
 	{
 		printf("No se encontró el archivo: %s", fileLocation);
@@ -62,9 +62,9 @@ bool Texture::LoadTexture()
 	glBindTexture(GL_TEXTURE_2D, textureID);//se indica que la textura es de tipo 2D, para superficies planas es suficiente esta textura
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);// eje S paralelo a X, repetir sobre el eje
-/*	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);// eje S paralelo a X, repetir sobre el eje pero rotando con forme a un centro
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);// eje S paralelo a X, envolver toda la superficie
-*/
+	/*	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);// eje S paralelo a X, repetir sobre el eje pero rotando con forme a un centro
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);// eje S paralelo a X, envolver toda la superficie
+	*/
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);// eje T paralelo a Y, repetir sobre el eje
 	/*GL_TEXTURE_MIN_FILTER: Para más cerca o textura se escala a menor tamaño. GL_TEXTURE_MAG_FILTER: Para más lejos o textura se escala a mayor tamaño.
 	GL_LINEAR  aplica sampling y blending de texels más cercanos. GL_NEAREST aplica sample de texel más cercano
@@ -110,32 +110,32 @@ Texture::~Texture()
 // volteo vertical usado por las texturas externas del proyecto.
 bool Texture::LoadFromMemory(const unsigned char* data, int size)
 {
-    if (!data || size <= 0) return false;
-    int w = 0, h = 0, channels = 0;
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char* pixels = stbi_load_from_memory(data, size, &w, &h, &channels, STBI_rgb_alpha);
-    if (!pixels) {
-        printf("No se pudo decodificar textura interna: %s\n", stbi_failure_reason());
-        return false;
-    }
-    bool loaded = LoadRGBA(pixels, w, h);
-    stbi_image_free(pixels);
-    return loaded;
+	if (!data || size <= 0) return false;
+	int w = 0, h = 0, channels = 0;
+	stbi_set_flip_vertically_on_load(true);
+	unsigned char* pixels = stbi_load_from_memory(data, size, &w, &h, &channels, STBI_rgb_alpha);
+	if (!pixels) {
+		printf("No se pudo decodificar textura interna: %s\n", stbi_failure_reason());
+		return false;
+	}
+	bool loaded = LoadRGBA(pixels, w, h);
+	stbi_image_free(pixels);
+	return loaded;
 }
 
 bool Texture::LoadRGBA(const unsigned char* data, int imageWidth, int imageHeight)
 {
-    if (!data || imageWidth <= 0 || imageHeight <= 0) return false;
-    if (textureID) glDeleteTextures(1, &textureID);
-    width = imageWidth; height = imageHeight; bitDepth = 4;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    return true;
+	if (!data || imageWidth <= 0 || imageHeight <= 0) return false;
+	if (textureID) glDeleteTextures(1, &textureID);
+	width = imageWidth; height = imageHeight; bitDepth = 4;
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	return true;
 }

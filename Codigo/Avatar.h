@@ -81,7 +81,12 @@ namespace Avatar {
 	inline float fase = 0.0f;                        // avanza al caminar (balanceo de brazos)
 	inline float mov = 0.0f;                         // 0 = quieto, 1 = caminando (suavizado)
 	inline float tiempo = 0.0f;
-	inline int modo = 3;                             // escenario donde está: 2 = Valle helado, 3 = Erid + Debate
+	inline int modo = 3;                       // escenario donde está: 2 = Valle helado, 3 = Erid + Debate
+	// Cámara orbital en tercera persona (se controla con el mouse)
+	inline float camYaw = -90.0f;               // dirección horizontal de la vista (grados); -90 mira hacia -Z
+	inline float camPitch = -16.0f;             // inclinación de la vista (negativo = mira hacia abajo)
+	inline constexpr float CAM_DIST = 25.0f;    // distancia de la cámara al avatar
+	inline constexpr float CAM_SENS = 0.25f;    // sensibilidad del mouse
 
 	// Calibración
 	inline bool calibrar = false;
@@ -96,8 +101,10 @@ namespace Avatar {
 		modo = escenario;
 		mov = 0.0f;
 		yaw = 0.0f;
-		if (modo == 2) pos = glm::vec3(0.0f, 0.0f, 30.0f);        // Valle helado: piso en y = 0
-		else           pos = glm::vec3(0.0f, PISO_ERID, 40.0f);   // Erid: frente al estrado
+		camYaw = -90.0f;     
+		camPitch = -16.0f;   
+		if (modo == 2) pos = glm::vec3(0.0f, 0.0f, 30.0f);
+		else           pos = glm::vec3(0.0f, PISO_ERID, 40.0f);
 	}
 
 	// Caja que envuelve todos los vértices de un .obj (en las coordenadas del archivo)
@@ -206,13 +213,18 @@ namespace Avatar {
 		tiempo += dt;
 		calibracion(dt);
 
-		glm::vec3 dir(0.0f);
-		if (teclas[GLFW_KEY_W]) dir.z -= 1.0f;
-		if (teclas[GLFW_KEY_S]) dir.z += 1.0f;
-		if (teclas[GLFW_KEY_A]) dir.x -= 1.0f;
-		if (teclas[GLFW_KEY_D]) dir.x += 1.0f;
+		// WASD relativo a hacia dónde mira la cámara
+		const float cy = glm::radians(camYaw);
+		const glm::vec3 frente(std::cos(cy), 0.0f, std::sin(cy));
+		const glm::vec3 derecha(-frente.z, 0.0f, frente.x);
 
-		bool caminando = glm::length(dir) > 0.0f;
+		glm::vec3 dir(0.0f);
+		if (teclas[GLFW_KEY_W]) dir += frente;
+		if (teclas[GLFW_KEY_S]) dir -= frente;
+		if (teclas[GLFW_KEY_A]) dir -= derecha;
+		if (teclas[GLFW_KEY_D]) dir += derecha;
+
+		bool caminando = glm::length(dir) > 0.0001f;
 		if (caminando) {
 			dir = glm::normalize(dir);
 			const float vel = (modo == 2) ? VELOCIDAD_VALLE : VELOCIDAD;
@@ -242,14 +254,23 @@ namespace Avatar {
 	}
 
 	// Cámara en tercera persona: detrás (+Z) y arriba del avatar, mirando hacia él
-	inline void seguirConCamara(Camera& cam) {
-		glm::vec3 objetivo = pos + glm::vec3(0.0f, 4.0f, 0.0f);
-		glm::vec3 camPos = pos + glm::vec3(0.0f, 11.0f, 24.0f);
-		glm::vec3 d = glm::normalize(objetivo - camPos);
-		cam = Camera(camPos, glm::vec3(0.0f, 1.0f, 0.0f),
-			glm::degrees(std::atan2(d.z, d.x)), glm::degrees(std::asin(d.y)), 1.0f, 0.5f);
-	}
+		// Cámara en tercera persona orbitando al avatar; el mouse la gira
+	inline void seguirConCamara(Camera& cam, float dxMouse = 0.0f, float dyMouse = 0.0f) {
+		camYaw += dxMouse * CAM_SENS;
+		camPitch = std::clamp(camPitch + dyMouse * CAM_SENS, -75.0f, 10.0f);
 
+		const float cy = glm::radians(camYaw), cp = glm::radians(camPitch);
+		const glm::vec3 d(std::cos(cy) * std::cos(cp), std::sin(cp), std::sin(cy) * std::cos(cp));
+
+		const glm::vec3 objetivo = pos + glm::vec3(0.0f, 4.0f, 0.0f);
+		glm::vec3 camPos = objetivo - d * CAM_DIST;
+		camPos.y = (std::max)(camPos.y, pos.y + 1.0f);   // no se mete bajo el piso
+
+		const glm::vec3 f = glm::normalize(objetivo - camPos);
+		cam = Camera(camPos, glm::vec3(0.0f, 1.0f, 0.0f),
+			glm::degrees(std::atan2(f.z, f.x)),
+			glm::degrees(std::asin(std::clamp(f.y, -0.99f, 0.99f))), 1.0f, 0.5f);
+	}
 	// Matriz final de una pieza a partir de su marco (ya colocado y rotado en su pivote J)
 	inline glm::mat4 pieza(const glm::mat4& marco, const glm::vec3& J, bool enMundo) {
 		// En mundo: los vértices traen la posición de Blender, se restan para girar sobre el pivote.

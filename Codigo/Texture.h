@@ -12,10 +12,9 @@ public:
 	void UseTexture();
 	void ClearTexture();
 	~Texture();
-private: 
+private:
 	GLuint textureID;
 	int width, height, bitDepth;
-	const char *fileLocation;
+	const char* fileLocation;
 
 };
-

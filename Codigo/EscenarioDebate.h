@@ -384,9 +384,6 @@ public:
 		// Estado limpio por seguridad
 		glDepthMask(GL_TRUE);
 		glDisable(GL_BLEND);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 
 		glm::mat4 model(1.0f);
 		glm::vec3 blanco(1.0f, 1.0f, 1.0f);
@@ -406,26 +403,18 @@ public:
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		podioModel.RenderModel();
 
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		// (Opcional, pero recomendado para cristales) Evita que el cristal oculte lo que hay dentro de sí mismo
-		glDepthMask(GL_FALSE);
-
 		// Kang
-		model = glm::mat4(1.0f);
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(-16.0f, Y_ESTRADO, -156.5f));
 		model = glm::scale(model, glm::vec3(4.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		kangModel.RenderModel();
 
 		// Kodos
-		model = glm::mat4(1.0f);
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(16.0f, Y_ESTRADO, -156.5f));
 		model = glm::scale(model, glm::vec3(4.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		kodosModel.RenderModel();
-		glDepthMask(GL_TRUE);
-		glDisable(GL_BLEND);
+
 		// Nave nodriza levitando
 		const float offsetLevitacion = 3.5f * sin(tiempoSegundos * 2.2f);
 		const float giroNave = tiempoSegundos * 35.0f * 0.01745329f;
