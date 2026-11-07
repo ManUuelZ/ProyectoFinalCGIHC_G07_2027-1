@@ -155,7 +155,7 @@
     <ClCompile Include="Mesh_tn.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="PointLight.cpp" />
-    <ClCompile Include="proyFinalMainMio.cpp" />
+    <ClCompile Include="proyFinalMain.cpp" />
     <ClCompile Include="Shader_light.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Sphere.cpp" />
